@@ -37,3 +37,6 @@
 # Build directories
 Minecraft/Minecraft/x64/
 x64
+/Minecraft/Minecraft/Debug
+/Minecraft/Minecraft/Release
+/Minecraft/Release/Minecraft.pdb
