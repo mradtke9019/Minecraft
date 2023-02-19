@@ -13,6 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{975af39a-20cc-4794-893b-5852f1473a41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures">
+      <UniqueIdentifier>{fcb20488-c113-4313-a156-0f00417056e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\AppSettings">
+      <UniqueIdentifier>{c5a507a2-c4a5-441a-b725-ddfe6755374b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Models">
+      <UniqueIdentifier>{c7d4dcc6-bc92-4501-8a9b-8aff89a445ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -56,5 +68,10 @@
     <ClInclude Include="Biome.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="unit_cube.obj">
+      <Filter>Resource Files\Models</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
