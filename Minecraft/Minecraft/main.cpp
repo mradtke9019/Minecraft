@@ -11,17 +11,27 @@
 #include <vector>
 #include <chrono>
 
+#include "Sky.h"
+
 
 int Width;
 int Height;
 using namespace std;
 
-
+void SetBackgroundColor(float time)
+{
+	float dayDuration = 10.0f;
+	glm::vec4 backgroundcolor = glm::vec4(Sky::GetColorForTimeOfDay(time, dayDuration), 1.0f);
+	glClearColor(backgroundcolor.r, backgroundcolor.g, backgroundcolor.b, 1.0f);
+}
 
 
 void display(GLFWwindow* window)
 {
+	float currentTime = glfwGetTime();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	SetBackgroundColor(currentTime);
+
 
 }
 
@@ -49,7 +59,8 @@ void initLight()
 void init()
 {
 	glEnable(GL_DEPTH_TEST);
-	glClearColor(0.1f, 0.2f, 0.2f, 1.0f);
+	glm::vec4 backgroundcolor = glm::vec4(Sky::GetColorForTimeOfDay(75, 600), 1.0f);;
+	glClearColor(backgroundcolor.r, backgroundcolor.g, backgroundcolor.b, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	initLight();
 	LoadShaders();
