@@ -160,6 +160,8 @@
     <ClInclude Include="Block.h" />
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="IRotatable.h" />
+    <ClInclude Include="ITransformable.h" />
+    <ClInclude Include="ITranslatable.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />

@@ -1,5 +1,8 @@
+#include "ITransformable.h"
+
 #pragma once
-class Model
+class Model : public ITransformable
 {
+
 };
 

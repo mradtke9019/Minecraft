@@ -104,6 +104,12 @@
     <ClInclude Include="IRotatable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ITranslatable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ITransformable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="unit_cube.obj">
