@@ -13,11 +13,35 @@ enum RotationType{Euler, AxisAngle};
 /// </summary>
 class IRotatable {
 private:
+	/// <summary>
+	/// The rotation method to be used by this object such as using euler angles or the axis angle method.
+	/// </summary>
 	RotationType rotationType;
+	/// <summary>
+	/// The angle in radians in which we will rotate about the x axis.
+	/// </summary>
 	float rotateX;
+	/// <summary>
+	/// The angle in radians in which we will rotate about the y axis.
+	/// </summary>
 	float rotateY;
+	/// <summary>
+	/// The angle in radians in which we will rotate about the z axis.
+	/// </summary>
 	float rotateZ;
+
+	/// <summary>
+	/// The point in which the rotation will happen about.
+	/// </summary>
+	glm::vec3 pivot;
+
+	/// <summary>
+	/// The axis in which we will rotate about in  the axis angle representation;
+	/// </summary>
 	glm::vec3 Axis;
+	/// <summary>
+	/// The angle in radians in which we will rotate about the axis specified.
+	/// </summary>
 	float angle;
 
 
@@ -28,6 +52,7 @@ public:
 		rotateY = 0;
 		rotateZ = 0;
 
+		pivot = glm::vec3(0, 0, 0);
 		Axis = glm::vec3(0, 0, 0);
 		angle = 0.0f;
 		rotationType = Euler;
@@ -46,6 +71,10 @@ public:
 		return angle;
 	}
 
+	/// <summary>
+	/// Returns the rotation matrix about a pivot and the currently chosen rotation type.
+	/// </summary>
+	/// <returns></returns>
 	glm::mat4 GetRotationMatrix()
 	{
 		glm::mat4 result = glm::mat4(1);
@@ -61,7 +90,7 @@ public:
 		case AxisAngle:
 			if (glm::length(Axis) <= 0 || Axis == glm::vec3(0, 0, 0))
 			{
-				Log::WriteLog("Axis angle using the 0 vector or the lenght of the axis is less than or equal to 0.", Warning);
+				Log::WriteLog("Axis angle using the 0 vector or the length of the axis is less than or equal to 0.", Warning);
 				return glm::mat4(1);
 			}
 
@@ -72,9 +101,21 @@ public:
 			Log::WriteLog("Rotation Method not found", Error);
 			break;
 		}
-		return result;
+		if (pivot == glm::vec3(0))
+			return result;
+
+		return glm::translate(glm::mat4(1), pivot) * result * glm::translate(glm::mat4(1), -pivot);
 	}
 
+	void SetPivot(glm::vec3 p)
+	{
+		pivot = p;
+	}
+
+	glm::vec3 GetPivot()
+	{
+		return pivot;
+	}
 
 	bool GetRotationMethod()
 	{
