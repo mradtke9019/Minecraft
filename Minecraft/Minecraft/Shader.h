@@ -38,7 +38,7 @@ private:
         GLuint ShaderObj = glCreateShader(ShaderType);
 
         if (ShaderObj == 0) {
-            fprintf(stderr, "Error creating shader type %d\n", ShaderType);
+            Log::WriteLog("Error creating shader type " + ShaderType, Error);
             exit(0);
         }
         // Bind the source code to the shader, this happens before compilation
@@ -51,7 +51,7 @@ private:
         if (!success) {
             GLchar InfoLog[1024];
             glGetShaderInfoLog(ShaderObj, 1024, NULL, InfoLog);
-            fprintf(stderr, "Error compiling shader type %d: '%s'\n", ShaderType, InfoLog);
+            Log::WriteLog("Error compiling shader type " + std::to_string(ShaderType) + ": " + InfoLog, Error);
             exit(1);
         }
         // Attach the compiled shader object to the program object
@@ -64,7 +64,7 @@ private:
         //Note: we will link all the shaders together into this ID
         ShaderProgramID = glCreateProgram();
         if (ShaderProgramID == 0) {
-            fprintf(stderr, "Error creating shader program\n");
+            Log::WriteLog("Error creating shader program.", Error);
             exit(1);
         }
 
@@ -82,7 +82,7 @@ private:
         glGetProgramiv(ShaderProgramID, GL_LINK_STATUS, &Success);
         if (Success == 0) {
             glGetProgramInfoLog(ShaderProgramID, sizeof(ErrorLog), NULL, ErrorLog);
-            fprintf(stderr, "Error linking shader program: '%s'\n", ErrorLog);
+            Log::WriteLog("Error linking shader program: " + std::string(ErrorLog), Error);
             exit(1);
         }
 
@@ -92,7 +92,7 @@ private:
         glGetProgramiv(ShaderProgramID, GL_VALIDATE_STATUS, &Success);
         if (!Success) {
             glGetProgramInfoLog(ShaderProgramID, sizeof(ErrorLog), NULL, ErrorLog);
-            fprintf(stderr, "Invalid shader program: '%s'\n", ErrorLog);
+            Log::WriteLog("Invalid shader program: " + std::string(ErrorLog), Error);
             exit(1);
         }
         // Finally, use the linked shader program
