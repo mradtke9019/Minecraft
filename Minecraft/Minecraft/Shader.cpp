@@ -158,3 +158,10 @@ void Shader::SetUniformFloatArray(const char* name, const float arr[], int count
 
 	glUniform1fv(id, count * sizeof(GLfloat), arr);
 }
+
+
+void Shader::SetLighting(LightSource* lighting)
+{
+	this->SetUniformVec3("LightColor", lighting->GetLightColor());
+	this->SetUniformVec3("LightPosition", lighting->GetLightPosition());
+}

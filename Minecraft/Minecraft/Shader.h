@@ -12,6 +12,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "stb_image.h";
 #include "Log.h"
+#include "LightSource.h"
 
 class Shader
 {
@@ -140,4 +141,6 @@ public:
     void SetUniformVec3(const char* vec, glm::vec3 vector);
 
     void SetUniformFloatArray(const char* name, const float arr[], int count);
+
+    void SetLighting(LightSource* lighting);
 };

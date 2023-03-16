@@ -142,6 +142,7 @@
     <ClCompile Include="Biome.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Chunk.cpp" />
+    <ClCompile Include="FixedCamera.cpp" />
     <ClCompile Include="glad\src\glad.c" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -161,6 +162,8 @@
     <ClInclude Include="Biome.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="Chunk.h" />
+    <ClInclude Include="FixedCamera.h" />
+    <ClInclude Include="ICamera.h" />
     <ClInclude Include="IRotatable.h" />
     <ClInclude Include="ITransformable.h" />
     <ClInclude Include="ITranslatable.h" />
@@ -173,7 +176,15 @@
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="unit_cube.obj">
+    <CopyFileToFolders Include="blinnPhong.frag">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="blinnPhong.vert">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Models\unit_cube.obj">
       <FileType>Document</FileType>
     </CopyFileToFolders>
   </ItemGroup>

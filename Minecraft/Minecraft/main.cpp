@@ -12,11 +12,27 @@
 #include <chrono>
 
 #include "Sky.h"
+#include "Block.h"
+#include "ICamera.h"
+#include "FixedCamera.h"
+#include "LightSource.h"
 
 
 int Width;
 int Height;
 using namespace std;
+
+Block* b;
+Model* blocKModel;
+Shader* activeShader;
+ICamera* activeCamera;
+LightSource* lighting;
+
+glm::mat4 GetProjection()
+{
+	return glm::perspective(glm::radians(60.0f), (float)Width / (float)Height, 0.1f, 300.0f);
+}
+
 
 void SetBackgroundColor(float time)
 {
@@ -32,28 +48,42 @@ void display(GLFWwindow* window)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	SetBackgroundColor(currentTime);
 
+	glm::mat4 projection = GetProjection();
 
+	activeShader->SetLighting(lighting);
+	//activeShader->SetUniform1f("time", timeValue);
+	//activeShader->SetUniform1f("rand", r);
+	activeShader->SetUniformMatrix4fv("view", activeCamera->GetViewTransform());
+	activeShader->SetUniformMatrix4fv("projection", &projection);
+	activeShader->SetUniformVec3("cameraPos", activeCamera->GetPosition());
+
+
+	b->Draw();
 }
 
 void LoadShaders()
 {
-
+	activeShader = new Shader("blinnPhong.vert", "./blinnPhong.frag");
 }
 
 
 void LoadCameras()
 {
-
+	glm::vec3 position = glm::vec3(-10, 10, 10);;
+	glm::vec3 target = glm::vec3(0, 0, 0);;
+	glm::vec3 up = glm::vec3(0, 1, 0);
+	activeCamera = new FixedCamera(position, target, up);
 }
 
 void LoadObjects()
 {
-
+	blocKModel = new Model("./unit_cube.obj", activeShader);
+	b = new Block(blocKModel);
 }
 
 void initLight()
 {
-
+	lighting = new LightSource(glm::vec3(10, 10, 10), glm::vec3(1, 1, 1));
 }
 
 void init()

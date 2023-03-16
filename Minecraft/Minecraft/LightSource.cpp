@@ -23,3 +23,13 @@ void LightSource::SetLightPosition(glm::vec3 pos)
 {
 	LightPosition = pos;
 }
+
+glm::vec3 LightSource::GetLightColor()
+{
+	return LightColor;
+}
+
+void LightSource::SetLightColor(glm::vec3 col)
+{
+	LightColor = col;
+}
