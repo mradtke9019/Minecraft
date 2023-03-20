@@ -84,6 +84,9 @@
     <ClCompile Include="FixedCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Model.h">
@@ -131,6 +134,9 @@
     <ClInclude Include="FixedCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="blinnPhong.frag">
@@ -139,10 +145,8 @@
     <CopyFileToFolders Include="Models\unit_cube.obj">
       <Filter>Resource Files\Models</Filter>
     </CopyFileToFolders>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="blinnPhong.vert">
+    <CopyFileToFolders Include="blinnPhong.vert">
       <Filter>Resource Files\Shaders</Filter>
-    </None>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

@@ -63,7 +63,7 @@ void display(GLFWwindow* window)
 
 void LoadShaders()
 {
-	activeShader = new Shader("blinnPhong.vert", "./blinnPhong.frag");
+	activeShader = new Shader("./blinnPhong.vert", "./blinnPhong.frag");
 }
 
 

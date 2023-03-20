@@ -1,15 +1,12 @@
-#include <vector>
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <vector>
 #include "Shader.h"
 #include "Log.h"
 #include "IRotatable.h"
@@ -23,7 +20,7 @@
 
 #include <string>
 #include <vector>
-using namespace std;
+#include "Texture.h"
 
 #define MAX_BONE_INFLUENCE 4
 
@@ -44,28 +41,22 @@ struct Vertex {
     float m_Weights[MAX_BONE_INFLUENCE];
 };
 
-struct Texture {
-    unsigned int id;
-    string type;
-    string path;
-};
-
 #pragma once
 class Mesh {
 public:
     // mesh Data
-    vector<Vertex>       vertices;
-    vector<unsigned int> indices;
-    vector<Texture>      textures;
+    std::vector<Vertex>       vertices;
+    std::vector<unsigned int> indices;
+    std::vector<Texture>      textures;
     unsigned int VAO;
 
-    //Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, Shader* shader);
+    //Mesh(std::std::vector<Vertex> vertices, std::std::vector<unsigned int> indices, std::std::vector<Texture> textures, Shader* shader);
     void SetShader(Shader* Shader);
     Shader* GetShader();
     void Draw(glm::mat4* ModelTransform = nullptr);
 
     // constructor
-    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, Shader* s, std::string mipmap = "GL_NEAREST_MIPMAP_NEAREST")
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, Shader* s, std::string mipmap = "GL_NEAREST_MIPMAP_NEAREST")
     {
         MeshTransform = glm::mat4(1);
         this->vertices = vertices;
