@@ -16,12 +16,14 @@
 #include "ICamera.h"
 #include "FixedCamera.h"
 #include "LightSource.h"
+#include "Chunk.h"
 
 
 int Width;
 int Height;
 using namespace std;
 
+Chunk* chunk;
 Block* b;
 Model* blocKModel;
 Shader* activeShader;
@@ -57,8 +59,7 @@ void display(GLFWwindow* window)
 	activeShader->SetUniformMatrix4fv("projection", &projection);
 	activeShader->SetUniformVec3("cameraPos", activeCamera->GetPosition());
 
-
-	b->Draw();
+	chunk->Draw();
 }
 
 void LoadShaders()
@@ -69,8 +70,8 @@ void LoadShaders()
 
 void LoadCameras()
 {
-	glm::vec3 position = glm::vec3(-10, 10, 10);;
-	glm::vec3 target = glm::vec3(0, 0, 0);;
+	glm::vec3 position = glm::vec3(-30, 30, 30);
+	glm::vec3 target = glm::vec3(0, 0, 0);
 	glm::vec3 up = glm::vec3(0, 1, 0);
 	activeCamera = new FixedCamera(position, target, up);
 }
@@ -79,6 +80,8 @@ void LoadObjects()
 {
 	blocKModel = new Model("./unit_cube.obj", activeShader);
 	b = new Block(blocKModel);
+
+	chunk = new Chunk(*b);
 }
 
 void initLight()
@@ -128,6 +131,9 @@ void ImguiData()
 	ImGui::NewFrame();
 	ImGui::SetNextWindowSize(ImVec2(400, 200));
 	ImGui::Begin("ImGUI window");
+
+
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 }
 
