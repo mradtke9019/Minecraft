@@ -41,9 +41,9 @@ glm::mat4* FirstPersonCamera::GetViewTransform()
 void FirstPersonCamera::UpdateCameraVectors()
 {
 	//Direction = glm::normalize(Target - GetPosition());
-	Front.x = glm::cos(*GetRotateY()) * glm::cos(*GetRotateX());
-	Front.y = glm::cos(*GetRotateX());
-	Front.z = glm::sin(*GetRotateY()) * glm::sin(*GetRotateX());
+	Front.x = glm::cos(GetRotateY()) * glm::cos(GetRotateX());
+	Front.y = glm::cos(GetRotateX());
+	Front.z = glm::sin(GetRotateY()) * glm::sin(GetRotateX());
 	glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	Right = glm::normalize(glm::cross(Front, worldUp));
 	//Should already be normalized by this point - redundant normalization, mostly safety check
@@ -62,9 +62,9 @@ void FirstPersonCamera::ProcessMouseMovement(float xoffset, float yoffset, GLboo
 	// make sure that when pitch is out of bounds, screen doesn't get flipped
 	if (constrainPitch)
 	{
-		if (*GetRotateX() > 1.553f)
+		if (GetRotateX() > 1.553f)
 			SetRotateX(1.553f);
-		if (*GetRotateY() < -1.553f)
+		if (GetRotateY() < -1.553f)
 			SetRotateY(-1.553f);
 	}
 
@@ -100,10 +100,7 @@ void FirstPersonCamera::HandleKeyboardInput(FirstPersonCamera::Movement directio
 	}
 }
 
-void FirstPersonCamera::HandleMouseInput()
-{
 
-}
 
 
 FirstPersonCamera::~FirstPersonCamera()

@@ -23,7 +23,6 @@ public:
 	~FirstPersonCamera();
 	glm::mat4* GetViewTransform();
 	void HandleKeyboardInput(FirstPersonCamera::Movement, float DeltaTime);
-	void HandleMouseInput();
 	void UpdateCameraVectors();
 	void ProcessMouseMovement(float, float, GLboolean);
 
