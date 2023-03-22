@@ -82,9 +82,9 @@ public:
 		{
 		case Euler:
 			result =
-				glm::rotate(result, *GetRotateY(), glm::vec3(0.0f, 1.0f, 0.0f)) *
-				glm::rotate(result, *GetRotateZ(), glm::vec3(0.0f, 0.0f, 1.0f)) *
-				glm::rotate(result, *GetRotateX(), glm::vec3(1.0f, 0.0f, 0.0f));
+				glm::rotate(result, GetRotateY(), glm::vec3(0.0f, 1.0f, 0.0f)) *
+				glm::rotate(result, GetRotateZ(), glm::vec3(0.0f, 0.0f, 1.0f)) *
+				glm::rotate(result, GetRotateX(), glm::vec3(1.0f, 0.0f, 0.0f));
 			break;
 
 		case AxisAngle:
@@ -127,18 +127,18 @@ public:
 		rotationType = type;
 	}
 
-	float* GetRotateX()
+	float& GetRotateX()
 	{
-		return &rotateX;
+		return rotateX;
 	}
 
-	float* GetRotateY()
+	float& GetRotateY()
 	{
-		return &rotateY;
+		return rotateY;
 	}
-	float* GetRotateZ()
+	float& GetRotateZ()
 	{
-		return &rotateZ;
+		return rotateZ;
 	}
 
 	void SetRotateX(float x)

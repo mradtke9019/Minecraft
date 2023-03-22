@@ -16,7 +16,10 @@
 #include "ICamera.h"
 #include "FixedCamera.h"
 #include "LightSource.h"
+#include "FirstPersonCamera.h"
+#include "Utility.h"
 
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
 int Width;
 int Height;
@@ -25,8 +28,13 @@ using namespace std;
 Block* b;
 Model* blocKModel;
 Shader* activeShader;
-ICamera* activeCamera;
+//ICamera* activeCamera;
+FirstPersonCamera* activeCamera = new FirstPersonCamera(glm::vec3(0.0f, 0.0f, -5.0f));
 LightSource* lighting;
+Utility* bookKeeper;
+bool firstMouse = true;
+float lastX; //= SCR_WIDTH / 2.0f;
+float lastY;// = SCR_HEIGHT / 2.0f;
 
 glm::mat4 GetProjection()
 {
@@ -72,7 +80,9 @@ void LoadCameras()
 	glm::vec3 position = glm::vec3(-10, 10, 10);;
 	glm::vec3 target = glm::vec3(0, 0, 0);;
 	glm::vec3 up = glm::vec3(0, 1, 0);
-	activeCamera = new FixedCamera(position, target, up);
+	//activeCamera = new FixedCamera(position, target, up);
+
+	//activeCamera = new FirstPersonCamera(glm::vec3(0.0f, 0.0f, -2.0f));
 }
 
 void LoadObjects()
@@ -86,6 +96,12 @@ void initLight()
 	lighting = new LightSource(glm::vec3(10, 10, 10), glm::vec3(1, 1, 1));
 }
 
+void initUtility() 
+{
+	bookKeeper = new Utility();
+}
+
+
 void init()
 {
 	glEnable(GL_DEPTH_TEST);
@@ -93,6 +109,7 @@ void init()
 	glClearColor(backgroundcolor.r, backgroundcolor.g, backgroundcolor.b, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	initLight();
+	initUtility();
 	LoadShaders();
 	LoadCameras();
 	LoadObjects();
@@ -109,7 +126,28 @@ void keyPress(GLFWwindow* window, int key, int scancode, int action, int mods)
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	}	
+	
+	if (key == GLFW_KEY_W && action == GLFW_REPEAT)
+	{
+		activeCamera->HandleKeyboardInput(FirstPersonCamera::FWD, bookKeeper->GetDeltaTime());
 	}
+
+	if (key == GLFW_KEY_S && action == GLFW_REPEAT)
+	{
+		activeCamera->HandleKeyboardInput(FirstPersonCamera::BACK, bookKeeper->GetDeltaTime());
+	}
+
+	if (key == GLFW_KEY_A && action == GLFW_REPEAT)
+	{
+		activeCamera->HandleKeyboardInput(FirstPersonCamera::LEFT, bookKeeper->GetDeltaTime());
+	}
+
+	if (key == GLFW_KEY_D && action == GLFW_REPEAT)
+	{
+		activeCamera->HandleKeyboardInput(FirstPersonCamera::RIGHT, bookKeeper->GetDeltaTime());
+	}
+
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -142,6 +180,9 @@ int main()
 {
 	Width = 1200;
 	Height = 900;
+	lastX = Width / 2.0f;
+	lastY; Height / 2.0f;
+
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -158,11 +199,12 @@ int main()
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetKeyCallback(window, keyPress);
+	glfwSetCursorPosCallback(window, mouse_callback);
 	// For potential future use
 	//glfwSetCursorPosCallback(window, mouse_callback);
 	//glfwSetScrollCallback(window, scroll_callback);
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -186,6 +228,7 @@ int main()
 	{
 
 		ImguiData();
+		bookKeeper->Update(static_cast<float>(glfwGetTime()));
 		display(window);
 		ImguiDraw();
 
@@ -202,4 +245,25 @@ int main()
 
 	glfwTerminate();
 	return 0;
+}
+
+void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
+{
+	float xpos = static_cast<float>(xposIn);
+	float ypos = static_cast<float>(yposIn);
+
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
+
+	float xoffset = xpos - lastX;
+	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+	lastX = xpos;
+	lastY = ypos;
+
+	activeCamera->ProcessMouseMovement(xoffset, yoffset, true);
 }
