@@ -1,7 +1,6 @@
 
-#include <glm/gtc/matrix_transform.hpp>
-
 #pragma once
+#include <glm/gtc/matrix_transform.hpp>
 
 class ITranslatable {
 private:
