@@ -101,7 +101,7 @@ void initLight()
 
 void initUtility() 
 {
-	bookKeeper = new Utility();
+	bookKeeper = new Utility(); 
 }
 
 
