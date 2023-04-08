@@ -179,6 +179,7 @@
     <ClInclude Include="Sky.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="ThirdPersonCamera.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>

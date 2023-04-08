@@ -1,5 +1,7 @@
 #pragma once
-
+/// <summary>
+/// Utility class to help with book keeping of the game state. 
+/// </summary>
 class Utility 
 {
 private:

@@ -2,9 +2,8 @@
 
 FirstPersonCamera::FirstPersonCamera()
 {
-	this->SetPosition(glm::vec3(0.0f, 0.0f, 1.0f));
+	this->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 	this->Front = glm::vec3(0.0f, 0.0f, -1.0f);
-	this->Direction = glm::vec3(0.0f, 0.0f, -1.0f);
 	this->Up = glm::vec3(0.0f, 1.0f, 0.0f);
 	this->Right = glm::vec3();
 	this->Target = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -12,14 +11,13 @@ FirstPersonCamera::FirstPersonCamera()
 	UpdateCameraVectors();
 
 	this->MovementSpeed = 2.5f;
-	this->MouseSensitivity = 0.01f;
+	this->MouseSensitivity = 0.001f;
 }
 
 FirstPersonCamera::FirstPersonCamera(glm::vec3 position)
 {
 	this->SetPosition(position);
 	this->Front = glm::vec3(0.0f, 0.0f, 1.0f);
-	this->Direction = glm::vec3(0.0f, 0.0f, -1.0f);
 	this->Up = glm::vec3(0.0f, 1.0f, 0.0f);
 	this->Right = glm::vec3();
 	this->Target = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -27,7 +25,7 @@ FirstPersonCamera::FirstPersonCamera(glm::vec3 position)
 	UpdateCameraVectors();
 
 	this->MovementSpeed = 2.5f;
-	this->MouseSensitivity = 0.01f;
+	this->MouseSensitivity = 0.001f;
 }
 
 glm::mat4* FirstPersonCamera::GetViewTransform()
@@ -42,8 +40,8 @@ void FirstPersonCamera::UpdateCameraVectors()
 {
 	//Direction = glm::normalize(Target - GetPosition());
 	Front.x = glm::cos(GetRotateY()) * glm::cos(GetRotateX());
-	Front.y = glm::cos(GetRotateX());
-	Front.z = glm::sin(GetRotateY()) * glm::sin(GetRotateX());
+	Front.y = glm::sin(GetRotateX());
+	Front.z = glm::sin(GetRotateY()) * glm::cos(GetRotateX());
 	glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	Right = glm::normalize(glm::cross(Front, worldUp));
 	//Should already be normalized by this point - redundant normalization, mostly safety check
@@ -59,13 +57,19 @@ void FirstPersonCamera::ProcessMouseMovement(float xoffset, float yoffset, GLboo
 	RotateY(xoffset);
 	RotateX(yoffset);
 
+	float constrain = 89.0f * (M_PI / 180.0f);
+
 	// make sure that when pitch is out of bounds, screen doesn't get flipped
 	if (constrainPitch)
 	{
-		if (GetRotateX() > 1.553f)
-			SetRotateX(1.553f);
-		if (GetRotateY() < -1.553f)
-			SetRotateY(-1.553f);
+		if (GetRotateX() > constrain) {
+			SetRotateX(constrain);
+		}
+
+		if (GetRotateX() < -constrain) {
+			SetRotateX(-constrain);
+		}
+
 	}
 
 	// update Front, Right and Up Vectors using the updated Euler angles
@@ -99,8 +103,6 @@ void FirstPersonCamera::HandleKeyboardInput(FirstPersonCamera::Movement directio
 		SetPosition(currPosition);
 	}
 }
-
-
 
 
 FirstPersonCamera::~FirstPersonCamera()
