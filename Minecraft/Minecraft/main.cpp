@@ -91,7 +91,7 @@ void LoadObjects()
 	blocKModel = new Model("./unit_cube.obj", activeShader);
 	b = new Block(blocKModel);
 
-	chunk = new Chunk(*b);
+	chunk = new Chunk(glm::vec3(0,0,0), *b);
 }
 
 void initLight()
