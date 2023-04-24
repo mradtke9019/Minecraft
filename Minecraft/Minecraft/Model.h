@@ -50,7 +50,7 @@ public:
     // draws the model, and thus all its meshes
     void Draw(glm::mat4* transform);
 
-    // draws the modell with the given transform overriding the existing one
+    // draws the model with the given transform overriding the existing one
     void Draw(glm::mat4 transform);
 
 private:

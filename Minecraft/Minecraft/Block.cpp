@@ -8,5 +8,5 @@ Block::Block(Model* m)
 
 void Block::Draw()
 {
-	model->Draw(GetTransformation());
+	model->Draw(GetTransformPointer());
 }

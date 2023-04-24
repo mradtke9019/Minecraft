@@ -58,19 +58,6 @@ public:
 		rotationType = Euler;
 	}
 
-
-	//Return angle clamped between 0 and 2 pi
-	// https://www.ryanjuckett.com/cyclic-coordinate-descent-in-2d/
-	static float SimplifyAngle(float angle)
-	{
-		angle = fmod(angle, (2.0 * M_PI));
-		if (angle < -M_PI)
-			angle += (2.0 * M_PI);
-		else if (angle > M_PI)
-			angle -= (2.0 * M_PI);
-		return angle;
-	}
-
 	/// <summary>
 	/// Returns the rotation matrix about a pivot and the currently chosen rotation type.
 	/// </summary>

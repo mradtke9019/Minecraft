@@ -7,14 +7,14 @@ Model::Model(std::string path, Shader* Shader)
 	loadModel(path);
 }
 
-void Model::Draw(glm::mat4 *ModelTransform)
+void Model::Draw(glm::mat4 *Transform)
 {
 	shader->Use();
-	shader->SetUniformMatrix4fv("model", ModelTransform);
+	shader->SetUniformMatrix4fv("model", Transform);
 	shader->SetUniformVec3("ObjectColor", ObjectColor);
 	for (int i = 0; i < meshes.size(); i++)
 	{
-		meshes.at(i).Draw(ModelTransform);
+		meshes.at(i).Draw(Transform);
 	}
 }
 
@@ -29,6 +29,7 @@ void Model::Draw(glm::mat4 transform)
 		meshes.at(i).Draw(&transform);
 	}
 }
+
 
 Shader* Model::GetShader()
 {
