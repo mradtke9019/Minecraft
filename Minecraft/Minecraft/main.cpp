@@ -19,13 +19,16 @@
 #include "FirstPersonCamera.h"
 #include "Utility.h"
 #include "Chunk.h"
+#include "RayIntersectionHelper.h"
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
 int Width;
 int Height;
 using namespace std;
 
+std::vector<Chunk*> chunks;
 Chunk* chunk;
 Block* b;
 Model* blocKModel;
@@ -37,6 +40,7 @@ Utility* bookKeeper;
 bool firstMouse = true;
 float lastX; //= SCR_WIDTH / 2.0f;
 float lastY;// = SCR_HEIGHT / 2.0f;
+std::map<int,bool> keymap;
 
 glm::mat4 GetProjection()
 {
@@ -67,7 +71,11 @@ void display(GLFWwindow* window)
 	activeShader->SetUniformMatrix4fv("projection", &projection);
 	activeShader->SetUniformVec3("cameraPos", activeCamera->GetPosition());
 
-	chunk->Draw();
+	for (auto c : chunks)
+	{
+		c->Draw();
+	}
+
 }
 
 void LoadShaders()
@@ -92,6 +100,11 @@ void LoadObjects()
 	b = new Block(blocKModel);
 
 	chunk = new Chunk(glm::vec3(0,0,0), *b);
+
+	chunks = std::vector<Chunk*>();
+	chunks.push_back(chunk);
+	chunks.push_back(new Chunk(glm::vec3(1, 0, 0), *b));
+	chunks.push_back(new Chunk(glm::vec3(2, 0, 0), *b));
 }
 
 void initLight()
@@ -118,7 +131,41 @@ void init()
 	LoadObjects();
 }
 
-
+void processInput()
+{
+	for (auto key : keymap)
+	{
+		int KEY = key.first;
+		bool pressed = key.second;
+		switch (KEY)
+		{
+		case GLFW_KEY_W:
+			if (pressed)
+			{
+				activeCamera->HandleKeyboardInput(FirstPersonCamera::FWD, bookKeeper->GetDeltaTime());
+			}
+			break;
+		case GLFW_KEY_S:
+			if (pressed)
+			{
+				activeCamera->HandleKeyboardInput(FirstPersonCamera::BACK, bookKeeper->GetDeltaTime());
+			}
+			break;
+		case GLFW_KEY_A:
+			if (pressed)
+			{
+				activeCamera->HandleKeyboardInput(FirstPersonCamera::LEFT, bookKeeper->GetDeltaTime());
+			}
+			break;
+		case GLFW_KEY_D:
+			if (pressed)
+			{
+				activeCamera->HandleKeyboardInput(FirstPersonCamera::RIGHT, bookKeeper->GetDeltaTime());
+			}
+			break;
+		}
+	}
+}
 
 // function to allow keyboard control
 // it's called a callback function and must be registerd in main() using glutKeyboardFunc();
@@ -126,31 +173,21 @@ void init()
 // similar functions exist for mouse control etc
 void keyPress(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+
+	std::map<int,bool>& keys = keymap;
+	if (action == GLFW_PRESS)
+	{
+		keys[key] = true;
+	}
+	else if (action == GLFW_RELEASE)
+	{
+		keys[key] = false;
+	}
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 	}	
-	
-	if (key == GLFW_KEY_W && action == GLFW_REPEAT)
-	{
-		activeCamera->HandleKeyboardInput(FirstPersonCamera::FWD, bookKeeper->GetDeltaTime());
-	}
-
-	if (key == GLFW_KEY_S && action == GLFW_REPEAT)
-	{
-		activeCamera->HandleKeyboardInput(FirstPersonCamera::BACK, bookKeeper->GetDeltaTime());
-	}
-
-	if (key == GLFW_KEY_A && action == GLFW_REPEAT)
-	{
-		activeCamera->HandleKeyboardInput(FirstPersonCamera::LEFT, bookKeeper->GetDeltaTime());
-	}
-
-	if (key == GLFW_KEY_D && action == GLFW_REPEAT)
-	{
-		activeCamera->HandleKeyboardInput(FirstPersonCamera::RIGHT, bookKeeper->GetDeltaTime());
-	}
-
+	return;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -206,6 +243,7 @@ int main()
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetKeyCallback(window, keyPress);
 	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	// For potential future use
 	//glfwSetCursorPosCallback(window, mouse_callback);
 	//glfwSetScrollCallback(window, scroll_callback);
@@ -235,6 +273,7 @@ int main()
 
 		ImguiData();
 		bookKeeper->Update(static_cast<float>(glfwGetTime()));
+		processInput();
 		display(window);
 		ImguiDraw();
 
@@ -272,4 +311,46 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 	lastY = ypos;
 
 	activeCamera->ProcessMouseMovement(xoffset, yoffset, true);
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		Log::WriteLog("Left mouse click", Info);
+		FirstPersonCamera* c = static_cast<FirstPersonCamera*>(activeCamera);
+		if (c == nullptr) {
+			return;
+		}
+
+		glm::vec3 rayOrigin = c->GetPosition();
+		glm::vec3 rayDirection = c->GetCameraDirection();
+		Block* closest = nullptr;
+		float closestDistance = std::numeric_limits<float>::max();
+
+		// Check for intersection with each triangle in the model
+		for (int i = 0; i < chunks.size(); i++)
+		{
+			std::vector<Block*> blocks =  chunks[i]->GetBlocks();
+			for (auto block : blocks)
+			{
+				if (!block->IsVisible())
+				{
+					continue;
+				}
+				RayIntersectionResult r = RayIntersectionHelper::IsRayIntersectingCube(rayOrigin, rayDirection, block->GetPosition(), 1.0f);
+
+				if (r.IsIntersecting && r.Distance < closestDistance)
+				{
+					closest = block;
+					closestDistance = r.Distance;
+				}
+			}
+		}
+
+		if (closest != nullptr)
+		{
+			closest->SetVisibility(false);
+		}
+	}
 }

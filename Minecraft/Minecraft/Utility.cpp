@@ -2,8 +2,8 @@
 
 Utility::Utility()
 {
-	float DeltaTime = 0.0f;
-	float LastFrame = 0.0f;
+	DeltaTime = 0.0f;
+	LastFrame = 0.0f;
 }
 
 Utility::~Utility()

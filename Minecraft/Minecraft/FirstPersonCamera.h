@@ -25,5 +25,5 @@ public:
 	void HandleKeyboardInput(FirstPersonCamera::Movement, float DeltaTime);
 	void UpdateCameraVectors();
 	void ProcessMouseMovement(float, float, GLboolean);
-
+	glm::vec3 GetCameraDirection();
 };

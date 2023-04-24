@@ -51,6 +51,22 @@ bool Chunk::IsBlockVisible(glm::vec3 localCoordinate)
 	return blocks[i][j][k].IsVisible();
 }
 
+std::vector<Block*> Chunk::GetBlocks()
+{
+	std::vector<Block*> results = std::vector<Block*>();
+	for (int i = 0; i < blocks.size(); i++)
+	{
+		for (int j = 0; j < blocks[i].size(); j++)
+		{
+			for (int k = 0; k < blocks[i][j].size(); k++)
+			{
+				results.push_back(&blocks[i][j][k]);
+			}
+		}
+	}
+	return results;
+}
+
 
 bool Chunk::ValidBlock(glm::vec3 localCoordinate)
 {
@@ -68,8 +84,7 @@ bool Chunk::ValidBlock(glm::vec3 localCoordinate)
 	// If all neighbors are visible, we cannot see the current block
 	if (IsBlockVisible(glm::vec3(i + 1, j, k)) && IsBlockVisible(glm::vec3(i - 1, j, k)) &&
 		IsBlockVisible(glm::vec3(i, j + 1, k)) && IsBlockVisible(glm::vec3(i, j - 1, k)) &&
-		IsBlockVisible(glm::vec3(i, j, k + 1)) && IsBlockVisible(glm::vec3(i, j, k - 1))
-	)
+		IsBlockVisible(glm::vec3(i, j, k + 1)) && IsBlockVisible(glm::vec3(i, j, k - 1)))
 	{
 		return false;
 	}

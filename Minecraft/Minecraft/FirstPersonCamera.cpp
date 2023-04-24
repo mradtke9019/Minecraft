@@ -24,8 +24,8 @@ FirstPersonCamera::FirstPersonCamera(glm::vec3 position)
 	this->View = glm::mat4(1.0f);
 	UpdateCameraVectors();
 
-	this->MovementSpeed = 2.5f;
-	this->MouseSensitivity = 0.001f;
+	this->MovementSpeed = 5.5f;
+	this->MouseSensitivity = 0.0015f;
 }
 
 glm::mat4* FirstPersonCamera::GetViewTransform()
@@ -74,6 +74,12 @@ void FirstPersonCamera::ProcessMouseMovement(float xoffset, float yoffset, GLboo
 
 	// update Front, Right and Up Vectors using the updated Euler angles
 	UpdateCameraVectors();
+}
+
+
+glm::vec3 FirstPersonCamera::GetCameraDirection()
+{
+	return Front;
 }
 
 

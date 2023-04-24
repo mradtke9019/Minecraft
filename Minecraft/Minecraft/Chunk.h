@@ -15,5 +15,7 @@ public:
 	void Draw();
 
 	bool IsBlockVisible(glm::vec3 localCoordinate);
+
+	std::vector<Block*> GetBlocks();
 };
 
