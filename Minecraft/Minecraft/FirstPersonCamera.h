@@ -16,7 +16,7 @@ private:
 
 public:
 
-	enum Movement { LEFT, RIGHT, FWD, BACK };
+	enum Movement { LEFT, RIGHT, FWD, BACK, UP, DOWN };
 
 	FirstPersonCamera();
 	FirstPersonCamera(glm::vec3 position);

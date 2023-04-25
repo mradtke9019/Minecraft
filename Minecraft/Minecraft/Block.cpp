@@ -17,7 +17,6 @@ void Block::Draw()
 	model->Draw(GetTransformPointer());
 }
 
-
 void Block::SetVisibility(bool v)
 {
 	visible = v;

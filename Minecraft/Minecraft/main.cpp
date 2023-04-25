@@ -62,13 +62,13 @@ void display(GLFWwindow* window)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	SetBackgroundColor(currentTime);
 
-	glm::mat4 projection = GetProjection();
+	//glm::mat4 projection = GetProjection();
 
 	activeShader->SetLighting(lighting);
 	//activeShader->SetUniform1f("time", timeValue);
 	//activeShader->SetUniform1f("rand", r);
 	activeShader->SetUniformMatrix4fv("view", activeCamera->GetViewTransform());
-	activeShader->SetUniformMatrix4fv("projection", &projection);
+	//activeShader->SetUniformMatrix4fv("projection", &projection);
 	activeShader->SetUniformVec3("cameraPos", activeCamera->GetPosition());
 
 	for (auto c : chunks)
@@ -117,6 +117,12 @@ void initUtility()
 	bookKeeper = new Utility(); 
 }
 
+void initProjection()
+{
+	glm::mat4 projection = GetProjection();
+	activeShader->SetUniformMatrix4fv("projection", &projection);
+}
+
 
 void init()
 {
@@ -129,6 +135,7 @@ void init()
 	LoadShaders();
 	LoadCameras();
 	LoadObjects();
+	initProjection();
 }
 
 void processInput()
@@ -161,6 +168,18 @@ void processInput()
 			if (pressed)
 			{
 				activeCamera->HandleKeyboardInput(FirstPersonCamera::RIGHT, bookKeeper->GetDeltaTime());
+			}
+			break;
+		case GLFW_KEY_C:
+			if (pressed)
+			{
+				activeCamera->HandleKeyboardInput(FirstPersonCamera::DOWN, bookKeeper->GetDeltaTime());
+			}
+			break;
+		case GLFW_KEY_SPACE:
+			if (pressed)
+			{
+				activeCamera->HandleKeyboardInput(FirstPersonCamera::UP, bookKeeper->GetDeltaTime());
 			}
 			break;
 		}

@@ -17,7 +17,8 @@ public:
     /// <param name="center"></param>
     /// <param name="size"></param>
     /// <returns></returns>
-    static bool IsPointInCube(glm::vec3 point, glm::vec3 center, float size) {
+    static bool IsPointInCube(glm::vec3 point, glm::vec3 center, float size) 
+    {
         glm::vec3 min = center - glm::vec3(size / 2);
         glm::vec3 max = center + glm::vec3(size / 2);
 
@@ -25,7 +26,8 @@ public:
     }
 
     // Check if a ray intersects with a cube
-    static RayIntersectionResult IsRayIntersectingCube(glm::vec3 rayOrigin, glm::vec3 rayDirection, glm::vec3 cubeCenter, float cubeSize) {
+    static RayIntersectionResult IsRayIntersectingCube(glm::vec3 rayOrigin, glm::vec3 rayDirection, glm::vec3 cubeCenter, float cubeSize) 
+    {
         glm::vec3 cubeMin = cubeCenter - glm::vec3(cubeSize / 2);
         glm::vec3 cubeMax = cubeCenter + glm::vec3(cubeSize / 2);
 
@@ -46,7 +48,8 @@ public:
         float tFar = glm::min(glm::min(glm::max(tMin.x, tMax.x), glm::max(tMin.y, tMax.y)), glm::max(tMin.z, tMax.z));
 
         // Check if the ray intersects with the cube
-        if (tNear <= tFar && tFar >= 0) {
+        if (tNear <= tFar && tFar >= 0) 
+        {
             // Check if the intersection point is within the cube
             glm::vec3 intersectionPoint = rayOrigin + tNear * rayDirection;
             bool intersecting = IsPointInCube(intersectionPoint, cubeCenter, cubeSize);

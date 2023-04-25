@@ -1,4 +1,5 @@
 #include "FirstPersonCamera.h"
+#include "Axis.h"
 
 FirstPersonCamera::FirstPersonCamera()
 {
@@ -17,15 +18,15 @@ FirstPersonCamera::FirstPersonCamera()
 FirstPersonCamera::FirstPersonCamera(glm::vec3 position)
 {
 	this->SetPosition(position);
-	this->Front = glm::vec3(0.0f, 0.0f, 1.0f);
-	this->Up = glm::vec3(0.0f, 1.0f, 0.0f);
+	this->Front = Axis::Z;
+	this->Up = Axis::Y;
 	this->Right = glm::vec3();
-	this->Target = glm::vec3(0.0f, 0.0f, 0.0f);
+	this->Target = Axis::ZeroVector;
 	this->View = glm::mat4(1.0f);
 	UpdateCameraVectors();
 
-	this->MovementSpeed = 5.5f;
-	this->MouseSensitivity = 0.0015f;
+	this->MovementSpeed = 7.5f;
+	this->MouseSensitivity = 0.00125f;
 }
 
 glm::mat4* FirstPersonCamera::GetViewTransform()
@@ -42,7 +43,7 @@ void FirstPersonCamera::UpdateCameraVectors()
 	Front.x = glm::cos(GetRotateY()) * glm::cos(GetRotateX());
 	Front.y = glm::sin(GetRotateX());
 	Front.z = glm::sin(GetRotateY()) * glm::cos(GetRotateX());
-	glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 worldUp = Axis::Y;
 	Right = glm::normalize(glm::cross(Front, worldUp));
 	//Should already be normalized by this point - redundant normalization, mostly safety check
 	Up = glm::normalize(glm::cross(Right, Front));
@@ -93,21 +94,36 @@ void FirstPersonCamera::HandleKeyboardInput(FirstPersonCamera::Movement directio
 		currPosition -= Front * velocity;
 		SetPosition(currPosition);
 	}
-	if (direction == FirstPersonCamera::FWD) {
+	else if (direction == FirstPersonCamera::FWD) {
 		glm::vec3 currPosition = GetPosition();
 		currPosition += Front * velocity;
 		SetPosition(currPosition);
 	}
-	if (direction == FirstPersonCamera::LEFT) {
+	else if (direction == FirstPersonCamera::LEFT) {
 		glm::vec3 currPosition = GetPosition();
 		currPosition -= Right * velocity;
 		SetPosition(currPosition);
 	}
-	if (direction == FirstPersonCamera::RIGHT) {
+	else if (direction == FirstPersonCamera::RIGHT) {
 		glm::vec3 currPosition = GetPosition();
 		currPosition += Right * velocity;
 		SetPosition(currPosition);
 	}
+	else if (direction == FirstPersonCamera::UP)
+	{
+
+		glm::vec3 currPosition = GetPosition();
+		currPosition += Axis::Y * velocity;
+		SetPosition(currPosition);
+	}
+	else if (direction == FirstPersonCamera::DOWN)
+	{
+
+		glm::vec3 currPosition = GetPosition();
+		currPosition -= Axis::Y * velocity;
+		SetPosition(currPosition);
+	}
+	
 }
 
 
