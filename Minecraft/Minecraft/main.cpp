@@ -69,7 +69,7 @@ void display(GLFWwindow* window)
 	//activeShader->SetUniform1f("rand", r);
 	activeShader->SetUniformMatrix4fv("view", activeCamera->GetViewTransform());
 	//activeShader->SetUniformMatrix4fv("projection", &projection);
-	activeShader->SetUniformVec3("cameraPos", activeCamera->GetPosition());
+	activeShader->SetUniformVec3("ViewPosition", activeCamera->GetPosition());
 
 	for (auto c : chunks)
 	{
@@ -99,12 +99,17 @@ void LoadObjects()
 	blocKModel = new Model("./unit_cube.obj", activeShader);
 	b = new Block(blocKModel);
 
-	chunk = new Chunk(glm::vec3(0,0,0), *b);
+	//chunk = new Chunk(glm::vec3(0,0,0), *b);
 
 	chunks = std::vector<Chunk*>();
-	chunks.push_back(chunk);
-	chunks.push_back(new Chunk(glm::vec3(1, 0, 0), *b));
-	chunks.push_back(new Chunk(glm::vec3(2, 0, 0), *b));
+	//chunks.push_back(chunk);
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			chunks.push_back(new Chunk(glm::vec3(i, 0, j), *b));
+		}
+	}
 }
 
 void initLight()

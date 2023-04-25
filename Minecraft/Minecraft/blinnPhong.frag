@@ -18,7 +18,6 @@ uniform float specularExp;
 
 uniform vec3 LightColor;
 uniform vec3 LightPosition;
-uniform vec3 LightDirection;
 uniform vec3 ViewPosition;
 
 
