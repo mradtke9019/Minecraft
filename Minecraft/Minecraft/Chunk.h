@@ -1,5 +1,7 @@
 #pragma once
 #include "Block.h"
+#include "Noise.h"
+
 class Chunk : public ITransformable
 {
 private:

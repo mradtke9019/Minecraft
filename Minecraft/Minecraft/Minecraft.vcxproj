@@ -176,6 +176,7 @@
     <ClInclude Include="Log.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="Noise.h" />
     <ClInclude Include="RayIntersectionHelper.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sky.h" />

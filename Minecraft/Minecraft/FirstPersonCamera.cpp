@@ -1,5 +1,4 @@
 #include "FirstPersonCamera.h"
-#include "Axis.h"
 
 FirstPersonCamera::FirstPersonCamera()
 {

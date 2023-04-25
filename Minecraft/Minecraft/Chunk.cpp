@@ -2,27 +2,38 @@
 
 Chunk::Chunk(glm::vec3 chunkCoordinate, Block block)
 {
+	glm::vec2 chunkCoord = glm::vec2(chunkCoordinate.x, chunkCoordinate.z);
 	this->SetPosition(chunkCoordinate);
 	blocks = std::vector<std::vector<std::vector<Block>>>();
 	//blocks.push_back(std::vector<std::vector<Block>>());
 	for (int i = 0; i < 16; i++)
 	{
 		blocks.push_back(std::vector<std::vector<Block>>());
-		for (int j = 0; j < 16; j++)
+		for (int k = 0;k < 16; k++)
 		{
 			blocks[i].push_back(std::vector<Block>());
-			for (int k = 0; k < 16; k++)
+			glm::vec2 coord = glm::vec2(i, k);
+			int height = Noise::GenerateHeight(0, 0, 16, chunkCoord, coord);
+
+			for (int j = 0; j < 16; j++)
 			{
+
 				Block newBlock = Block(block);
 				glm::vec3 blockWorldPosition = GetBlockGlobalCoordinate(glm::vec3(i,j,k));
 				newBlock.SetPosition(blockWorldPosition);
 
-				blocks[i][j].push_back(newBlock);
+
+				//int h = glm::floor(height * 16);
+				if (j > height)
+				{
+					newBlock.SetVisibility(false);
+				}
+
+				blocks[i][k].push_back(newBlock);
 			}
 		}
 	}
 
-	blocks[0][0][0].SetVisibility(false);
 }
 
 
