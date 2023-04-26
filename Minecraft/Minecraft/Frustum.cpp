@@ -39,5 +39,5 @@ void Frustum::UpdateFrustum(ICamera* cam)
 
 bool Frustum::IsVolumeInFrustum(Volume& v)
 {
-    return false;
+    return true;
 }
