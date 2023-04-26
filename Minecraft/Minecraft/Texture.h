@@ -12,11 +12,38 @@
 class Texture
 {
 private:
+
+    unsigned int TextureID;
+    //data
+    unsigned char* BufferData;
+
+    std::string FilePath;
+
+    int Height, Width, BitsPerPixel;
+
+    GLenum Target;
+    
 public:
     unsigned int id;
-    std::string name;
     std::string type;
     std::string path;
+
+    //Default constructor is only to be used for Model.h
+    Texture();
+    Texture(const char* path, GLenum target = GL_TEXTURE_2D);
+    ~Texture();
+
+    unsigned int& GetTextureID();
+    std::string& GetFilePath();
+    int& GetHeight();
+    int& GetWidth();
+    GLenum& GetTarget();
+    
+    static void SetTextureSlot(int slot);
+
+    void Bind(unsigned int slot = 0);
+    void Unbind();
+
 
     static unsigned int TextureFromFile(const char* path, const std::string& directory)
     {

@@ -20,6 +20,7 @@
 #include "Utility.h"
 #include "Chunk.h"
 #include "RayIntersectionHelper.h"
+#include "Texture.h"
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
@@ -31,11 +32,11 @@ using namespace std;
 std::vector<Chunk*> chunks;
 Chunk* chunk;
 Block* b;
-Model* blocKModel;
 Shader* activeShader;
 //ICamera* activeCamera;
 FirstPersonCamera* activeCamera = new FirstPersonCamera(glm::vec3(0.0f, 0.0f, -5.0f));
 LightSource* lighting;
+Texture* testTex; 
 Utility* bookKeeper;
 bool firstMouse = true;
 float lastX; //= SCR_WIDTH / 2.0f;
@@ -67,9 +68,7 @@ void display(GLFWwindow* window)
 	activeShader->SetLighting(lighting);
 	//activeShader->SetUniform1f("time", timeValue);
 	//activeShader->SetUniform1f("rand", r);
-	activeShader->SetUniformMatrix4fv("view", activeCamera->GetViewTransform());
 	//activeShader->SetUniformMatrix4fv("projection", &projection);
-	activeShader->SetUniformVec3("ViewPosition", activeCamera->GetPosition());
 
 	for (auto c : chunks)
 	{
@@ -78,9 +77,15 @@ void display(GLFWwindow* window)
 
 }
 
+void UpdateViewData() {
+	activeShader->SetUniformMatrix4fv("view", activeCamera->GetViewTransform());
+	activeShader->SetUniformVec3("ViewPosition", activeCamera->GetPosition());
+}
+
 void LoadShaders()
 {
-	activeShader = new Shader("./blinnPhong.vert", "./blinnPhong.frag");
+	//activeShader = new Shader("./blinnPhong.vert", "./blinnPhong.frag");
+	activeShader = new Shader("./textureTest.vert", "./textureTest.frag");
 }
 
 
@@ -96,8 +101,7 @@ void LoadCameras()
 
 void LoadObjects()
 {
-	blocKModel = new Model("./unit_cube.obj", activeShader);
-	b = new Block(blocKModel);
+	b = new Block(activeShader, testTex);
 
 	//chunk = new Chunk(glm::vec3(0,0,0), *b);
 
@@ -114,7 +118,14 @@ void LoadObjects()
 
 void initLight()
 {
-	lighting = new LightSource(glm::vec3(10, 10, 10), glm::vec3(1, 1, 1));
+	lighting = new LightSource(glm::vec3(10, 100, 10), glm::vec3(1, 1, 1));
+}
+
+void initTexture() {
+	const char* path = "./DirtTexture.png";
+	testTex = new Texture(path);
+	testTex->Bind();
+	activeShader->SetUniform1i("TextureSlot", 0);
 }
 
 void initUtility() 
@@ -138,6 +149,7 @@ void init()
 	initLight();
 	initUtility();
 	LoadShaders();
+	initTexture();
 	LoadCameras();
 	LoadObjects();
 	initProjection();
@@ -155,36 +167,42 @@ void processInput()
 			if (pressed)
 			{
 				activeCamera->HandleKeyboardInput(FirstPersonCamera::FWD, bookKeeper->GetDeltaTime());
+				UpdateViewData();
 			}
 			break;
 		case GLFW_KEY_S:
 			if (pressed)
 			{
 				activeCamera->HandleKeyboardInput(FirstPersonCamera::BACK, bookKeeper->GetDeltaTime());
+				UpdateViewData();
 			}
 			break;
 		case GLFW_KEY_A:
 			if (pressed)
 			{
 				activeCamera->HandleKeyboardInput(FirstPersonCamera::LEFT, bookKeeper->GetDeltaTime());
+				UpdateViewData();
 			}
 			break;
 		case GLFW_KEY_D:
 			if (pressed)
 			{
 				activeCamera->HandleKeyboardInput(FirstPersonCamera::RIGHT, bookKeeper->GetDeltaTime());
+				UpdateViewData();
 			}
 			break;
 		case GLFW_KEY_C:
 			if (pressed)
 			{
 				activeCamera->HandleKeyboardInput(FirstPersonCamera::DOWN, bookKeeper->GetDeltaTime());
+				UpdateViewData();
 			}
 			break;
 		case GLFW_KEY_SPACE:
 			if (pressed)
 			{
 				activeCamera->HandleKeyboardInput(FirstPersonCamera::UP, bookKeeper->GetDeltaTime());
+				UpdateViewData();
 			}
 			break;
 		}
@@ -248,7 +266,9 @@ int main()
 	Width = 1200;
 	Height = 900;
 	lastX = Width / 2.0f;
-	lastY; Height / 2.0f;
+	lastY = Height / 2.0f;
+
+
 
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -335,6 +355,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 	lastY = ypos;
 
 	activeCamera->ProcessMouseMovement(xoffset, yoffset, true);
+	UpdateViewData();
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)

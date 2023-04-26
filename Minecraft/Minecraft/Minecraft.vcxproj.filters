@@ -172,5 +172,14 @@
     <CopyFileToFolders Include="blinnPhong.vert">
       <Filter>Resource Files\Shaders</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="textureTest.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="textureTest.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Textures\DirtTexture.png">
+      <Filter>Resource Files\Textures</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
