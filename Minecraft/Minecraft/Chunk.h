@@ -1,8 +1,9 @@
 #pragma once
 #include "Block.h"
 #include "Noise.h"
+#include "Frustum.h"
 
-class Chunk : public ITransformable
+class Chunk : public ITransformable, public BoxVolume
 {
 private:
 	std::vector<std::vector<std::vector<Block>>> blocks;
