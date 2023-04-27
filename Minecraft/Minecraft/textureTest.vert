@@ -8,7 +8,6 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform vec3 LightColor;
-uniform vec3 ObjectColor;
 uniform vec3 LightPosition;  
 
 out vec3 fNormal;

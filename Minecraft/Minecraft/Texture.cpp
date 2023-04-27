@@ -12,7 +12,7 @@ Texture::Texture(const char* path, GLenum target) : TextureID(0), FilePath(path)
 	stbi_set_flip_vertically_on_load(1);
 	BufferData = stbi_load(path, &Width, &Height, &BitsPerPixel, 4);
 
-	glEnable(target);
+	glEnable(Target);
 	glGenTextures(1, &TextureID);
 	glBindTexture(Target, TextureID);
 
@@ -32,6 +32,7 @@ Texture::~Texture()
 {
 	glDeleteTextures(1, &TextureID);
 }
+
 
 void Texture::Bind(unsigned int slot)
 {

@@ -7,29 +7,27 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Shader.h"
 
-class Block: public ITransformable
+class Block : public ITransformable
 {
 private:
 	Model* model;
 	bool visible;
-	Texture* texture;
+	std::vector<Texture*> Textures;
 	Shader* shader;
 	//Store the cube data here.
 	//Layout: Vertex Positions, Texture Coordinates, Normal Vector
 	float* cubeData;
-
+	const int NumFaces = 6;
 	unsigned int CubeVAO, CubeVBO;
 
 
 public:
-	Block(Shader* s, Texture* tex);
+	Block(Shader* s, std::vector<Texture*> tex);
 
 	void SetVisibility(bool v);
-	
+
 	bool IsVisible();
 
 	void Draw();
 
-	void ChangeTexture(Texture* newTexture);
 };
-

@@ -209,6 +209,15 @@
       <FileType>Document</FileType>
     </CopyFileToFolders>
   </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Textures\DiamondTexture.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Textures\CoalTexture.png" />
+    <CopyFileToFolders Include="Textures\GoldTexture.png" />
+    <CopyFileToFolders Include="Textures\RedstoneTexture.png" />
+    <CopyFileToFolders Include="Textures\SilverTexture.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

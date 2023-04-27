@@ -181,5 +181,20 @@
     <CopyFileToFolders Include="Textures\DirtTexture.png">
       <Filter>Resource Files\Textures</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="Textures\DiamondTexture.png">
+      <Filter>Resource Files\Textures</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Textures\RedstoneTexture.png">
+      <Filter>Resource Files\Textures</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Textures\SilverTexture.png">
+      <Filter>Resource Files\Textures</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Textures\CoalTexture.png">
+      <Filter>Resource Files\Textures</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Textures\GoldTexture.png">
+      <Filter>Resource Files\Textures</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

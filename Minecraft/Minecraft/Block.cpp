@@ -1,6 +1,6 @@
 #include "Block.h"
 
-Block::Block(Shader* s, Texture* tex)
+Block::Block(Shader* s, std::vector<Texture*> textures)
 	: ITransformable()
 {
 	//model = m;
@@ -68,9 +68,11 @@ Block::Block(Shader* s, Texture* tex)
         glEnableVertexAttribArray(1);
         // normal attribute 
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
-        glEnableVertexAttribArray(2);
-        
-        texture = tex;
+        glEnableVertexAttribArray(2);     
+
+        for (int i = 0; i < textures.size(); i++) {
+            Textures.push_back(textures[i]);
+        }
    
 }
 
@@ -80,23 +82,22 @@ void Block::Draw()
 	{
 		return;
 	}
-    //temp var
-    glm::vec3 ObjectColor = glm::vec3(1.0f, 0.0, 0.0f);
-	//model->Draw(GetTransformPointer());
+	
+    int numVertices = 6;
+
     shader->Use();
     shader->SetUniformMatrix4fv("model", GetTransformPointer());
-    shader->SetUniformVec3("ObjectColor", ObjectColor);
     glBindVertexArray(CubeVAO);
-    //glActiveTexture(GL_TEXTURE0);
-    //glBindTexture(GL_TEXTURE_2D, texture->GetTextureID());
-    texture->Bind();
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    
+    for (int i = 0; i < NumFaces; i++) 
+    {
+        Textures[i]->Bind();
+        glDrawArrays(GL_TRIANGLES, i * numVertices, numVertices);
+        //glDrawArrays(GL_TRIANGLES, 0, 36);
+        //glBindVertexArray(0);
+    }
+    //glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
-}
-
-void Block::ChangeTexture(Texture* newTexture)
-{
-    texture = newTexture;
 }
 
 void Block::SetVisibility(bool v)

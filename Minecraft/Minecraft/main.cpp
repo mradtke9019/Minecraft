@@ -37,6 +37,7 @@ Shader* activeShader;
 FirstPersonCamera* activeCamera = new FirstPersonCamera(glm::vec3(0.0f, 0.0f, -5.0f));
 LightSource* lighting;
 Texture* testTex; 
+std::vector<Texture*> testTexs;
 Utility* bookKeeper;
 bool firstMouse = true;
 float lastX; //= SCR_WIDTH / 2.0f;
@@ -101,7 +102,7 @@ void LoadCameras()
 
 void LoadObjects()
 {
-	b = new Block(activeShader, testTex);
+	b = new Block(activeShader, testTexs);
 
 	//chunk = new Chunk(glm::vec3(0,0,0), *b);
 
@@ -122,9 +123,16 @@ void initLight()
 }
 
 void initTexture() {
-	const char* path = "./DirtTexture.png";
-	testTex = new Texture(path);
-	testTex->Bind();
+	const char* path = "./DiamondTexture.png";
+
+	std::vector<const char*> paths = {"./CoalTexture.png", "./DiamondTexture.png", "./DirtTexture.png", "./GoldTexture.png", "./RedstoneTexture.png", "./SilverTexture.png"};
+
+	for (int i = 0; i < paths.size(); i++) 
+	{
+		testTexs.push_back(new Texture(paths[i]));
+	}
+
+	//testTex = new Texture(path);
 	activeShader->SetUniform1i("TextureSlot", 0);
 }
 
