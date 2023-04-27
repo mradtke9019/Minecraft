@@ -24,6 +24,12 @@ public:
 
 	virtual glm::mat4* GetViewTransform() = 0;
 
+	virtual glm::vec3 GetCameraDirection() = 0;
+
+	virtual glm::vec3 GetCameraRight() = 0;
+
+	virtual glm::vec3 GetCameraUp() = 0;
+
 	static glm::mat4 FixedViewCamera()
 	{
 		glm::vec3 cameraPos = glm::vec3(0.0f, 10.0f, 5.0f);

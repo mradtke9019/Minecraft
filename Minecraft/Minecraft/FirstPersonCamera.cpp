@@ -1,6 +1,7 @@
 #include "FirstPersonCamera.h"
 
 FirstPersonCamera::FirstPersonCamera()
+	:frustum()
 {
 	this->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 	this->Front = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -15,6 +16,7 @@ FirstPersonCamera::FirstPersonCamera()
 }
 
 FirstPersonCamera::FirstPersonCamera(glm::vec3 position)
+	:frustum()
 {
 	this->SetPosition(position);
 	this->Front = Axis::Z;
@@ -47,6 +49,7 @@ void FirstPersonCamera::UpdateCameraVectors()
 	//Should already be normalized by this point - redundant normalization, mostly safety check
 	Up = glm::normalize(glm::cross(Right, Front));
 
+	frustum.UpdateFrustum(this);
 }
 
 void FirstPersonCamera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true)
@@ -76,12 +79,27 @@ void FirstPersonCamera::ProcessMouseMovement(float xoffset, float yoffset, GLboo
 	UpdateCameraVectors();
 }
 
+Frustum& FirstPersonCamera::GetFrustum()
+{
+	return frustum;
+}
+
 
 glm::vec3 FirstPersonCamera::GetCameraDirection()
 {
 	return Front;
 }
 
+
+glm::vec3 FirstPersonCamera::GetCameraRight()
+{
+	return Right;
+}
+
+glm::vec3 FirstPersonCamera::GetCameraUp()
+{
+	return Up;
+}
 
 void FirstPersonCamera::HandleKeyboardInput(FirstPersonCamera::Movement direction, float DeltaTime) {
 	
@@ -122,7 +140,8 @@ void FirstPersonCamera::HandleKeyboardInput(FirstPersonCamera::Movement directio
 		currPosition -= Axis::Y * velocity;
 		SetPosition(currPosition);
 	}
-	
+
+	frustum.UpdateFrustum(this);
 }
 
 

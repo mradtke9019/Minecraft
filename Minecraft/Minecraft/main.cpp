@@ -21,16 +21,16 @@
 #include "Chunk.h"
 #include "RayIntersectionHelper.h"
 #include "Texture.h"
+#include "Projection.h"
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
-int Width;
-int Height;
+//int Width;
+//int Height;
 using namespace std;
 
 std::vector<Chunk*> chunks;
-Chunk* chunk;
 Block* b;
 Shader* activeShader;
 //ICamera* activeCamera;
@@ -43,12 +43,6 @@ bool firstMouse = true;
 float lastX; //= SCR_WIDTH / 2.0f;
 float lastY;// = SCR_HEIGHT / 2.0f;
 std::map<int,bool> keymap;
-
-glm::mat4 GetProjection()
-{
-	return glm::perspective(glm::radians(60.0f), (float)Width / (float)Height, 0.1f, 300.0f);
-}
-
 
 void SetBackgroundColor(float time)
 {
@@ -73,7 +67,7 @@ void display(GLFWwindow* window)
 
 	for (auto c : chunks)
 	{
-		c->Draw();
+		c->Draw(&activeCamera->GetFrustum());
 	}
 
 }
@@ -143,7 +137,7 @@ void initUtility()
 
 void initProjection()
 {
-	glm::mat4 projection = GetProjection();
+	glm::mat4 projection = Projection::GetProjection();
 	activeShader->SetUniformMatrix4fv("projection", &projection);
 }
 
@@ -242,9 +236,9 @@ void keyPress(GLFWwindow* window, int key, int scancode, int action, int mods)
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-	Height = height;
-	Width = width;
-	glViewport(0, 0, width, height);
+	Projection::Height = height;
+	Projection::Width = width;
+	glViewport(0, 0, Projection::fovy, Projection::Height);
 }
 
 // Function where we set our debuggables
@@ -271,10 +265,10 @@ void ImguiDraw()
 
 int main()
 {
-	Width = 1200;
-	Height = 900;
-	lastX = Width / 2.0f;
-	lastY = Height / 2.0f;
+	Projection::Width = 1200;
+	Projection::Height = 900;
+	lastX = Projection::Width / 2.0f;
+	lastY = Projection::Height / 2.0f;
 
 
 
@@ -283,7 +277,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	// --------------------
-	GLFWwindow* window = glfwCreateWindow(Width, Height, "Scene", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(Projection::Width, Projection::Height, "Scene", NULL, NULL);
 
 	if (window == NULL)
 	{
