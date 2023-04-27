@@ -167,6 +167,7 @@
     <ClInclude Include="Biome.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="Chunk.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="FirstPersonCamera.h" />
     <ClInclude Include="FixedCamera.h" />
     <ClInclude Include="Frustum.h" />

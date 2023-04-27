@@ -2,23 +2,23 @@
 
 Chunk::Chunk(glm::vec3 chunkCoordinate, Block block) 
 {
-	min = 16.0f * chunkCoordinate;
-	max = 16.0f * chunkCoordinate + glm::vec3(16, 16, 16);
+	min = (float)Constants::CHUNK_SIZE * chunkCoordinate;
+	max = (float)Constants::CHUNK_SIZE * chunkCoordinate + glm::vec3(Constants::CHUNK_SIZE, Constants::CHUNK_SIZE, Constants::CHUNK_SIZE);
 
 	glm::vec2 chunkCoord = glm::vec2(chunkCoordinate.x, chunkCoordinate.z);
 	this->SetPosition(chunkCoordinate);
 	blocks = std::vector<std::vector<std::vector<Block>>>();
 	//blocks.push_back(std::vector<std::vector<Block>>());
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < Constants::CHUNK_SIZE; i++)
 	{
 		blocks.push_back(std::vector<std::vector<Block>>());
-		for (int k = 0;k < 16; k++)
+		for (int k = 0;k < Constants::CHUNK_SIZE; k++)
 		{
 			blocks[i].push_back(std::vector<Block>());
 			glm::vec2 coord = glm::vec2(i, k);
-			int height = Noise::GenerateHeight(0, 0, 16, chunkCoord, coord);
+			int height = Noise::GenerateHeight(Constants::SEED, 0, Constants::CHUNK_SIZE, chunkCoord, coord);
 
-			for (int j = 0; j < 16; j++)
+			for (int j = 0; j < Constants::CHUNK_SIZE; j++)
 			{
 
 				Block newBlock = Block(block);
@@ -39,11 +39,19 @@ Chunk::Chunk(glm::vec3 chunkCoordinate, Block block)
 
 }
 
+glm::vec3 Chunk::GetChunkGlobalCoordinate()
+{
+	return this->GetPosition() * (float)Constants::CHUNK_SIZE;
+}
 
 glm::vec3 Chunk::GetBlockGlobalCoordinate(glm::vec3 localCoordinate)
 {
 	glm::vec3 ChunkCoordinate = this->GetPosition();
-	glm::vec3 blockWorldPosition = glm::vec3(localCoordinate.x + ChunkCoordinate.x * 16, localCoordinate.y + ChunkCoordinate.y * 16, localCoordinate.z + ChunkCoordinate.z * 16);
+	glm::vec3 blockWorldPosition = glm::vec3(
+		localCoordinate.x + ChunkCoordinate.x * Constants::CHUNK_SIZE, 
+		localCoordinate.y + ChunkCoordinate.y * Constants::CHUNK_SIZE, 
+		localCoordinate.z + ChunkCoordinate.z * Constants::CHUNK_SIZE);
+
 	return blockWorldPosition;
 }
 
@@ -55,9 +63,9 @@ bool Chunk::IsBlockVisible(glm::vec3 localCoordinate)
 	int j = localCoordinate.y;
 	int k = localCoordinate.z;
 
-	if (i < 0 || i >= 16 ||
-		j < 0 || j>= 16 || 
-		k< 0 || k >= 16)
+	if (i < 0 || i >= Constants::CHUNK_SIZE ||
+		j < 0 || j>= Constants::CHUNK_SIZE ||
+		k< 0 || k >= Constants::CHUNK_SIZE)
 	{
 		return false;
 	}
@@ -108,29 +116,6 @@ bool Chunk::ValidBlock(glm::vec3 localCoordinate)
 
 void Chunk::Draw()
 {
-	for (int i = 0; i < blocks.size(); i++)
-	{
-		for (int j = 0; j < blocks[i].size(); j++)
-		{
-			for (int k = 0; k < blocks[i][j].size(); k++)
-			{
-				glm::vec3 localCoordinate = glm::vec3(i, j, k);
-				if (ValidBlock(localCoordinate))
-				{
-					blocks[i][j][k].Draw();
-				}
-			}
-		}
-	}
-}
-
-void Chunk::Draw(Frustum* f)
-{
-	if (!this->IsInsideFrustum(*f))
-	{
-		return;
-	}
-
 	for (int i = 0; i < blocks.size(); i++)
 	{
 		for (int j = 0; j < blocks[i].size(); j++)

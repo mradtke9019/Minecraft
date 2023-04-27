@@ -3,6 +3,7 @@
 #include "Noise.h"
 #include "Frustum.h"
 #include "Volume.h"
+#include "Constants.h"
 
 class Chunk : public ITransformable, public AABB
 {
@@ -10,7 +11,18 @@ private:
 	std::vector<std::vector<std::vector<Block>>> blocks;
 
 public:
+	//Returns the closest chunk coordinate to a global coordinate
+	static glm::vec3 GlobalToChunkCoordinate(glm::vec3 coord)
+	{
+		glm::vec3 chunkCoord = coord / (float)Constants::CHUNK_SIZE;
+		chunkCoord = glm::floor(chunkCoord);
+
+		return chunkCoord;
+	}
+
 	Chunk(glm::vec3 chunkCoordinate,Block block);
+
+	glm::vec3 GetChunkGlobalCoordinate();
 
 	glm::vec3 GetBlockGlobalCoordinate(glm::vec3 localCoordinate);
 
@@ -18,7 +30,7 @@ public:
 
 	void Draw();
 
-	void Draw(Frustum* f);
+	//void Draw(Frustum* f);
 
 	bool IsBlockVisible(glm::vec3 localCoordinate);
 

@@ -64,10 +64,61 @@ void display(GLFWwindow* window)
 	//activeShader->SetUniform1f("time", timeValue);
 	//activeShader->SetUniform1f("rand", r);
 	//activeShader->SetUniformMatrix4fv("projection", &projection);
+	
+	// Remove chunks if they are too far away
+	glm::vec3 PlayerChunkCoordinate = Chunk::GlobalToChunkCoordinate(activeCamera->GetPosition());
+	chunks.erase(std::remove_if(chunks.begin(), chunks.end(),
+		[&](Chunk* c) 
+		{
+			float distance = glm::distance(PlayerChunkCoordinate, c->GetPosition());
+			if (distance > Constants::RADIUS_GENERATION)
+				return true;
+			return false;
+		}), chunks.end());
+
+	// Add new chunks to load based on the current player position.
+	// Do a loop for coordinates around the player to see if we can add any chunks.
+	for (int i = -Constants::RADIUS_GENERATION; i < Constants::RADIUS_GENERATION; i++)
+	{
+		for (int j = -Constants::RADIUS_GENERATION; j < Constants::RADIUS_GENERATION; j++)
+		{
+			glm::vec3 chunkCoordinate = glm::vec3(PlayerChunkCoordinate.x,0, PlayerChunkCoordinate.z) + glm::vec3(i, 0, j);
+			float distance = glm::distance(PlayerChunkCoordinate, chunkCoordinate);
+			if (distance > Constants::RADIUS_GENERATION)
+				continue;
+
+			auto chunk = std::find_if(
+				chunks.begin(),
+				chunks.end(),
+				[&](Chunk* c) {
+					return c->GetPosition() == chunkCoordinate;
+				});
+
+			if (chunk != chunks.end())
+			{
+			}
+			else
+			{
+				chunks.push_back(new Chunk(chunkCoordinate, *b));
+			}
+
+		}
+	}
 
 	for (auto c : chunks)
 	{
-		c->Draw(&activeCamera->GetFrustum());
+		float distance = glm::distance(activeCamera->GetPosition(), c->GetChunkGlobalCoordinate());
+		
+		if (distance > Constants::RADIUS_GENERATION)
+		{
+			//v.erase(std::remove_if(v.begin(), v.end(),
+			//	[](int i) { return i < 10; }), v.end());
+		}
+	}
+
+	for (auto c : chunks)
+	{
+		c->Draw();
 	}
 
 }
