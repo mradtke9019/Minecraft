@@ -140,7 +140,8 @@ void FirstPersonCamera::HandleKeyboardInput(FirstPersonCamera::Movement directio
 		currPosition -= Axis::Y * velocity;
 		SetPosition(currPosition);
 	}
-	
+
+	frustum.UpdateFrustum(this);
 }
 
 

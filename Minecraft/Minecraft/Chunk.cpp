@@ -1,7 +1,10 @@
 #include "Chunk.h"
 
-Chunk::Chunk(glm::vec3 chunkCoordinate, Block block)
+Chunk::Chunk(glm::vec3 chunkCoordinate, Block block) 
 {
+	min = 16.0f * chunkCoordinate;
+	max = 16.0f * chunkCoordinate + glm::vec3(16, 16, 16);
+
 	glm::vec2 chunkCoord = glm::vec2(chunkCoordinate.x, chunkCoordinate.z);
 	this->SetPosition(chunkCoordinate);
 	blocks = std::vector<std::vector<std::vector<Block>>>();
@@ -105,6 +108,29 @@ bool Chunk::ValidBlock(glm::vec3 localCoordinate)
 
 void Chunk::Draw()
 {
+	for (int i = 0; i < blocks.size(); i++)
+	{
+		for (int j = 0; j < blocks[i].size(); j++)
+		{
+			for (int k = 0; k < blocks[i][j].size(); k++)
+			{
+				glm::vec3 localCoordinate = glm::vec3(i, j, k);
+				if (ValidBlock(localCoordinate))
+				{
+					blocks[i][j][k].Draw();
+				}
+			}
+		}
+	}
+}
+
+void Chunk::Draw(Frustum* f)
+{
+	if (!this->IsInsideFrustum(*f))
+	{
+		return;
+	}
+
 	for (int i = 0; i < blocks.size(); i++)
 	{
 		for (int j = 0; j < blocks[i].size(); j++)

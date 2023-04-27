@@ -37,7 +37,7 @@ void Frustum::UpdateFrustum(ICamera* cam)
     bottomFace = Plane(pos, glm::cross(frontMultFar + up * halfVSide, right));
 }
 
-bool Frustum::IsVolumeInFrustum(Volume& v)
-{
-    return true;
-}
+//bool Frustum::IsVolumeInFrustum(Volume& v)
+//{
+//    return true;
+//}

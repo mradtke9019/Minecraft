@@ -66,10 +66,7 @@ void display(GLFWwindow* window)
 
 	for (auto c : chunks)
 	{
-		if(activeCamera->GetFrustum().IsVolumeInFrustum(*c))
-		{
-			c->Draw();
-		}
+		c->Draw(&activeCamera->GetFrustum());
 	}
 
 }

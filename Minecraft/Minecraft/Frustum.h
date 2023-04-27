@@ -1,7 +1,6 @@
 #pragma once
 #include "Plane.h"
 #include <glm/glm.hpp>
-#include "Volume.h"
 #include "ICamera.h"
 class Frustum
 {
@@ -11,6 +10,8 @@ private:
     float zNear;
     float zFar;
 
+
+public:
     Plane topFace;
     Plane bottomFace;
 
@@ -20,13 +21,11 @@ private:
     Plane farFace;
     Plane nearFace;
 
-public:
-
     Frustum();
 
     Frustum(ICamera* cam);
 
     void UpdateFrustum(ICamera* cam);
 
-    bool IsVolumeInFrustum(Volume& v);
+    //bool IsVolumeInFrustum(Volume& v);
 };
