@@ -1,3 +1,4 @@
+#pragma once
 class Constants {
 public:
 	//static const int CHUNK_WIDTH = 16;
