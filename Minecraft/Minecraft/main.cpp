@@ -22,6 +22,7 @@
 #include "RayIntersectionHelper.h"
 #include "Texture.h"
 #include "Projection.h"
+#include "WorldDelta.h"
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
@@ -29,6 +30,8 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 //int Width;
 //int Height;
 using namespace std;
+
+WorldDelta worldDelta = WorldDelta();
 
 std::vector<Chunk*> chunks;
 Block* b;
@@ -99,7 +102,7 @@ void display(GLFWwindow* window)
 			}
 			else
 			{
-				chunks.push_back(new Chunk(chunkCoordinate, *b));
+				chunks.push_back(new Chunk(chunkCoordinate, *b, worldDelta));
 			}
 
 		}
@@ -157,7 +160,7 @@ void LoadObjects()
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			chunks.push_back(new Chunk(glm::vec3(i, 0, j), *b));
+			chunks.push_back(new Chunk(glm::vec3(i, 0, j), *b, worldDelta));
 		}
 	}
 }
@@ -424,6 +427,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 		glm::vec3 rayOrigin = c->GetPosition();
 		glm::vec3 rayDirection = c->GetCameraDirection();
 		Block* closest = nullptr;
+		Chunk* closestChunk = nullptr;
 		float closestDistance = std::numeric_limits<float>::max();
 
 		// Check for intersection with each triangle in the model
@@ -442,12 +446,14 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 				{
 					closest = block;
 					closestDistance = r.Distance;
+					closestChunk = chunks[i];
 				}
 			}
 		}
 
 		if (closest != nullptr)
 		{
+			worldDelta.AddOrModifyDelta(closest->GetPosition(), BlockType::None);
 			closest->SetVisibility(false);
 		}
 	}

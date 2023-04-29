@@ -4,6 +4,7 @@
 #include "Frustum.h"
 #include "Volume.h"
 #include "Constants.h"
+#include "WorldDelta.h"
 
 class Chunk : public ITransformable, public AABB
 {
@@ -20,7 +21,7 @@ public:
 		return chunkCoord;
 	}
 
-	Chunk(glm::vec3 chunkCoordinate,Block block);
+	Chunk(glm::vec3 chunkCoordinate,Block block, WorldDelta deltas);
 
 	glm::vec3 GetChunkGlobalCoordinate();
 

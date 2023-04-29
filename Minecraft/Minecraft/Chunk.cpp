@@ -1,6 +1,6 @@
 #include "Chunk.h"
 
-Chunk::Chunk(glm::vec3 chunkCoordinate, Block block) 
+Chunk::Chunk(glm::vec3 chunkCoordinate, Block block, WorldDelta deltas)
 {
 	min = (float)Constants::CHUNK_SIZE * chunkCoordinate;
 	max = (float)Constants::CHUNK_SIZE * chunkCoordinate + glm::vec3(Constants::CHUNK_SIZE, Constants::CHUNK_SIZE, Constants::CHUNK_SIZE);
@@ -22,7 +22,8 @@ Chunk::Chunk(glm::vec3 chunkCoordinate, Block block)
 			{
 
 				Block newBlock = Block(block);
-				glm::vec3 blockWorldPosition = GetBlockGlobalCoordinate(glm::vec3(i,j,k));
+				glm::vec3 blockCoordinate = glm::vec3(i, j, k);
+				glm::vec3 blockWorldPosition = GetBlockGlobalCoordinate(blockCoordinate);
 				newBlock.SetPosition(blockWorldPosition);
 
 
@@ -30,6 +31,17 @@ Chunk::Chunk(glm::vec3 chunkCoordinate, Block block)
 				if (j > height)
 				{
 					newBlock.SetVisibility(false);
+				}
+
+				Delta* d = deltas.GetDelta(blockWorldPosition);
+				if (d != nullptr)
+				{
+					switch (d->type)
+					{
+					case BlockType::None:
+						newBlock.SetVisibility(false);
+						break;
+					}
 				}
 
 				blocks[i][k].push_back(newBlock);

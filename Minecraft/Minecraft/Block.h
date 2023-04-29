@@ -7,6 +7,17 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Shader.h"
 
+enum BlockType
+{
+	None,
+	Grass,
+	Stone,
+	Gold,
+	Coal,
+	Diamond,
+	Carpet
+};
+
 class Block : public ITransformable
 {
 private:
