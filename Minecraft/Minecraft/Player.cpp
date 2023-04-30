@@ -1,6 +1,7 @@
 #include "Player.h"
 
 Player::Player()
+	: currentBlock(Grass)
 {
 	camera = new FirstPersonCamera(glm::vec3(0.0f, 0.0f, -5.0f));
 	this->MovementSpeed = 7.5f;
@@ -8,6 +9,7 @@ Player::Player()
 }
 
 Player::Player(ICamera* cam)
+	: currentBlock(Grass)
 {
 	camera = cam;
 	this->MovementSpeed = 7.5f;
@@ -165,7 +167,7 @@ void Player::HandlePlayerInput(World* world, GLFWwindow* window, int button, int
 			if (foundVisible)
 			{
 				Block* block = hits[i - 1].block;
-				world->GetWorldDelta()->AddOrModifyDelta(block->GetPosition(), BlockType::Grass);
+				world->GetWorldDelta()->AddOrModifyDelta(block->GetPosition(), currentBlock);
 				block->SetVisibility(true);
 				return;
 			}

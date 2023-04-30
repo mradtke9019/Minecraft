@@ -61,6 +61,7 @@ Delta* WorldDelta::AddOrModifyDelta(glm::vec3 blockGlobalCoordinate, BlockType t
 		delta.BlockGlobalCoordinate = blockGlobalCoordinate;
 		delta.ChunkCoordinate = glm::vec3(0);
 		delta.BlockCoordinate = glm::vec3(0);
+		delta.type = type;
 		deltas.push_back(delta);
 		d = &delta;
 	}

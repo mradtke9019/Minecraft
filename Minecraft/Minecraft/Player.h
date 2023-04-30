@@ -14,6 +14,7 @@ private:
 	float MovementSpeed;
 	float MouseSensitivity;
 	ICamera* camera;
+	BlockType currentBlock;
 
 public:
 	Player();
