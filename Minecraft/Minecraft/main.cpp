@@ -22,7 +22,7 @@
 #include "RayIntersectionHelper.h"
 #include "Texture.h"
 #include "Projection.h"
-#include "WorldDelta.h"
+#include "World.h"
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
@@ -31,9 +31,8 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 //int Height;
 using namespace std;
 
-WorldDelta worldDelta = WorldDelta();
+World world = World();
 
-std::vector<Chunk*> chunks;
 Block* b;
 Shader* activeShader;
 //ICamera* activeCamera;
@@ -69,60 +68,8 @@ void display(GLFWwindow* window)
 	//activeShader->SetUniformMatrix4fv("projection", &projection);
 	
 	// Remove chunks if they are too far away
-	glm::vec3 PlayerChunkCoordinate = Chunk::GlobalToChunkCoordinate(activeCamera->GetPosition());
-	chunks.erase(std::remove_if(chunks.begin(), chunks.end(),
-		[&](Chunk* c) 
-		{
-			float distance = glm::distance(PlayerChunkCoordinate, c->GetPosition());
-			if (distance > Constants::RADIUS_GENERATION)
-				return true;
-			return false;
-		}), chunks.end());
-
-	// Add new chunks to load based on the current player position.
-	// Do a loop for coordinates around the player to see if we can add any chunks.
-	for (int i = -Constants::RADIUS_GENERATION; i < Constants::RADIUS_GENERATION; i++)
-	{
-		for (int j = -Constants::RADIUS_GENERATION; j < Constants::RADIUS_GENERATION; j++)
-		{
-			glm::vec3 chunkCoordinate = glm::vec3(PlayerChunkCoordinate.x,0, PlayerChunkCoordinate.z) + glm::vec3(i, 0, j);
-			float distance = glm::distance(PlayerChunkCoordinate, chunkCoordinate);
-			if (distance > Constants::RADIUS_GENERATION)
-				continue;
-
-			auto chunk = std::find_if(
-				chunks.begin(),
-				chunks.end(),
-				[&](Chunk* c) {
-					return c->GetPosition() == chunkCoordinate;
-				});
-
-			if (chunk != chunks.end())
-			{
-			}
-			else
-			{
-				chunks.push_back(new Chunk(chunkCoordinate, *b, worldDelta));
-			}
-
-		}
-	}
-
-	for (auto c : chunks)
-	{
-		float distance = glm::distance(activeCamera->GetPosition(), c->GetChunkGlobalCoordinate());
-		
-		if (distance > Constants::RADIUS_GENERATION)
-		{
-			//v.erase(std::remove_if(v.begin(), v.end(),
-			//	[](int i) { return i < 10; }), v.end());
-		}
-	}
-
-	for (auto c : chunks)
-	{
-		c->Draw();
-	}
+	world.UpdateByPlayerPosition(activeCamera->GetPosition(),b, true);
+	world.Draw();
 
 }
 
@@ -154,15 +101,15 @@ void LoadObjects()
 
 	//chunk = new Chunk(glm::vec3(0,0,0), *b);
 
-	chunks = std::vector<Chunk*>();
-	//chunks.push_back(chunk);
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			chunks.push_back(new Chunk(glm::vec3(i, 0, j), *b, worldDelta));
-		}
-	}
+	//chunks = std::vector<Chunk*>();
+	////chunks.push_back(chunk);
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	for (int j = 0; j < 3; j++)
+	//	{
+	//		chunks.push_back(new Chunk(glm::vec3(i, 0, j), *b, worldDelta));
+	//	}
+	//}
 }
 
 void initLight()
@@ -427,13 +374,13 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 		glm::vec3 rayOrigin = c->GetPosition();
 		glm::vec3 rayDirection = c->GetCameraDirection();
 		Block* closest = nullptr;
-		Chunk* closestChunk = nullptr;
-		float closestDistance = std::numeric_limits<float>::max();
 
+		float closestDistance = std::numeric_limits<float>::max();
+		std::vector<Chunk>* chunks = world.GetChunks();
 		// Check for intersection with each triangle in the model
-		for (int i = 0; i < chunks.size(); i++)
+		for (int i = 0; i < chunks->size(); i++)
 		{
-			std::vector<Block*> blocks =  chunks[i]->GetBlocks();
+			std::vector<Block*> blocks =  chunks->at(i).GetBlocks();
 			for (auto block : blocks)
 			{
 				if (!block->IsVisible())
@@ -446,15 +393,68 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 				{
 					closest = block;
 					closestDistance = r.Distance;
-					closestChunk = chunks[i];
+
 				}
 			}
 		}
 
 		if (closest != nullptr)
 		{
-			worldDelta.AddOrModifyDelta(closest->GetPosition(), BlockType::None);
+			world.GetWorldDelta()->AddOrModifyDelta(closest->GetPosition(), BlockType::None);
 			closest->SetVisibility(false);
+		}
+	}
+	else if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+	{
+		Log::WriteLog("Right mouse click", Info);
+		FirstPersonCamera* c = static_cast<FirstPersonCamera*>(activeCamera);
+		if (c == nullptr) 
+		{
+			return;
+		}
+
+		glm::vec3 rayOrigin = c->GetPosition();
+		glm::vec3 rayDirection = glm::normalize(c->GetCameraDirection());
+
+		std::vector<BlockIntersectionResult> hits = std::vector<BlockIntersectionResult>();
+
+		std::vector<Chunk>* chunks = world.GetChunks();
+
+		// Find all intersecting blocks both visible and invisible
+		for (int i = 0; i < chunks->size(); i++)
+		{
+			std::vector<Block*> blocks = chunks->at(i).GetBlocks();
+			for (auto block : blocks)
+			{
+				RayIntersectionResult r = RayIntersectionHelper::IsRayIntersectingCube(rayOrigin, rayDirection, block->GetPosition(), 1.0f);
+
+				if (r.IsIntersecting)
+				{
+					BlockIntersectionResult br = BlockIntersectionResult();
+					br.Distance = r.Distance;
+					br.block = block;
+					br.IsIntersecting = true;
+					hits.push_back(br);
+				}
+			}
+		}
+
+		// Search our hits for the closest visible object. The next closest invisible object will be the one we want to make visible
+		bool foundVisible = false;
+		std::sort(hits.begin(), hits.end());
+		for (int i = 1; i < hits.size(); i++)
+		{
+			if (hits[i].block->IsVisible())
+			{
+				foundVisible = true;
+			}
+			if (foundVisible)
+			{
+				Block* block = hits[i - 1].block;
+				world.GetWorldDelta()->AddOrModifyDelta(block->GetPosition(), BlockType::Grass);
+				block->SetVisibility(true);
+				return;
+			}
 		}
 	}
 }

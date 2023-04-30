@@ -23,6 +23,8 @@ public:
 
 	Chunk(glm::vec3 chunkCoordinate,Block block, WorldDelta deltas);
 
+	std::vector<std::vector<std::vector<Block>>>* GetBlockData();
+
 	glm::vec3 GetChunkGlobalCoordinate();
 
 	glm::vec3 GetBlockGlobalCoordinate(glm::vec3 localCoordinate);
@@ -34,6 +36,11 @@ public:
 	//void Draw(Frustum* f);
 
 	bool IsBlockVisible(glm::vec3 localCoordinate);
+
+	/// <summary>
+	/// Returns the block at the corresponding local coordinate.
+	/// </summary>
+	Block* GetBlock(glm::vec3 coordinate);
 
 	std::vector<Block*> GetBlocks();
 };

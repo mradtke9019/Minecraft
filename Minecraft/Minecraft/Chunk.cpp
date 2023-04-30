@@ -41,6 +41,9 @@ Chunk::Chunk(glm::vec3 chunkCoordinate, Block block, WorldDelta deltas)
 					case BlockType::None:
 						newBlock.SetVisibility(false);
 						break;
+					default:
+						newBlock.SetVisibility(true);
+						break;
 					}
 				}
 
@@ -83,6 +86,31 @@ bool Chunk::IsBlockVisible(glm::vec3 localCoordinate)
 	}
 
 	return blocks[i][j][k].IsVisible();
+}
+
+std::vector<std::vector<std::vector<Block>>>* Chunk::GetBlockData()
+{
+	return &blocks;
+}
+
+/// <summary>
+/// Returns the block at the corresponding local coordinate.
+/// </summary>
+Block* Chunk::GetBlock(glm::vec3 localCoordinate)
+{
+	int i = localCoordinate.x;
+	int j = localCoordinate.y;
+	int k = localCoordinate.z;
+	if (i < 0 || i > Constants::CHUNK_SIZE
+		|| j < 0 || j > Constants::CHUNK_SIZE
+		|| k< 0 || k > Constants::CHUNK_SIZE)
+	{
+		Log::WriteLog("Argument out of range.", Warning);
+		return nullptr;
+	}
+
+
+	return &blocks[i][j][k];
 }
 
 std::vector<Block*> Chunk::GetBlocks()

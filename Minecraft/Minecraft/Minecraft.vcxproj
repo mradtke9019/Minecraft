@@ -161,6 +161,7 @@
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Utility.cpp" />
+    <ClCompile Include="World.cpp" />
     <ClCompile Include="WorldDelta.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -192,6 +193,7 @@
     <ClInclude Include="ThirdPersonCamera.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Volume.h" />
+    <ClInclude Include="World.h" />
     <ClInclude Include="WorldDelta.h" />
   </ItemGroup>
   <ItemGroup>
