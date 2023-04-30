@@ -23,6 +23,7 @@
 #include "Texture.h"
 #include "Projection.h"
 #include "World.h"
+#include "Player.h"
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
@@ -35,8 +36,7 @@ World world = World();
 
 Block* b;
 Shader* activeShader;
-//ICamera* activeCamera;
-FirstPersonCamera* activeCamera = new FirstPersonCamera(glm::vec3(0.0f, 0.0f, -5.0f));
+Player player = Player();
 LightSource* lighting;
 Texture* testTex; 
 std::vector<Texture*> testTexs;
@@ -68,14 +68,14 @@ void display(GLFWwindow* window)
 	//activeShader->SetUniformMatrix4fv("projection", &projection);
 	
 	// Remove chunks if they are too far away
-	world.UpdateByPlayerPosition(activeCamera->GetPosition(),b, true);
+	world.UpdateByPlayerPosition(player.GetCamera()->GetPosition(),b, true);
 	world.Draw();
 
 }
 
 void UpdateViewData() {
-	activeShader->SetUniformMatrix4fv("view", activeCamera->GetViewTransform());
-	activeShader->SetUniformVec3("ViewPosition", activeCamera->GetPosition());
+	activeShader->SetUniformMatrix4fv("view", player.GetCamera()->GetViewTransform());
+	activeShader->SetUniformVec3("ViewPosition", player.GetCamera()->GetPosition());
 }
 
 void LoadShaders()
@@ -169,42 +169,42 @@ void processInput()
 		case GLFW_KEY_W:
 			if (pressed)
 			{
-				activeCamera->HandleKeyboardInput(FirstPersonCamera::FWD, bookKeeper->GetDeltaTime());
+				player.HandlePlayerMovement(FWD, bookKeeper->GetDeltaTime());
 				UpdateViewData();
 			}
 			break;
 		case GLFW_KEY_S:
 			if (pressed)
 			{
-				activeCamera->HandleKeyboardInput(FirstPersonCamera::BACK, bookKeeper->GetDeltaTime());
+				player.HandlePlayerMovement(BACK, bookKeeper->GetDeltaTime());
 				UpdateViewData();
 			}
 			break;
 		case GLFW_KEY_A:
 			if (pressed)
 			{
-				activeCamera->HandleKeyboardInput(FirstPersonCamera::LEFT, bookKeeper->GetDeltaTime());
+				player.HandlePlayerMovement(LEFT, bookKeeper->GetDeltaTime());
 				UpdateViewData();
 			}
 			break;
 		case GLFW_KEY_D:
 			if (pressed)
 			{
-				activeCamera->HandleKeyboardInput(FirstPersonCamera::RIGHT, bookKeeper->GetDeltaTime());
+				player.HandlePlayerMovement(RIGHT, bookKeeper->GetDeltaTime());
 				UpdateViewData();
 			}
 			break;
 		case GLFW_KEY_C:
 			if (pressed)
 			{
-				activeCamera->HandleKeyboardInput(FirstPersonCamera::DOWN, bookKeeper->GetDeltaTime());
+				player.HandlePlayerMovement(DOWN, bookKeeper->GetDeltaTime());
 				UpdateViewData();
 			}
 			break;
 		case GLFW_KEY_SPACE:
 			if (pressed)
 			{
-				activeCamera->HandleKeyboardInput(FirstPersonCamera::UP, bookKeeper->GetDeltaTime());
+				player.HandlePlayerMovement(UP, bookKeeper->GetDeltaTime());
 				UpdateViewData();
 			}
 			break;
@@ -357,104 +357,11 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 	lastX = xpos;
 	lastY = ypos;
 
-	activeCamera->ProcessMouseMovement(xoffset, yoffset, true);
+	player.ProcessMouseMovement(xoffset, yoffset, true);
 	UpdateViewData();
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-	{
-		Log::WriteLog("Left mouse click", Info);
-		FirstPersonCamera* c = static_cast<FirstPersonCamera*>(activeCamera);
-		if (c == nullptr) {
-			return;
-		}
-
-		glm::vec3 rayOrigin = c->GetPosition();
-		glm::vec3 rayDirection = c->GetCameraDirection();
-		Block* closest = nullptr;
-
-		float closestDistance = std::numeric_limits<float>::max();
-		std::vector<Chunk>* chunks = world.GetChunks();
-		// Check for intersection with each triangle in the model
-		for (int i = 0; i < chunks->size(); i++)
-		{
-			std::vector<Block*> blocks =  chunks->at(i).GetBlocks();
-			for (auto block : blocks)
-			{
-				if (!block->IsVisible())
-				{
-					continue;
-				}
-				RayIntersectionResult r = RayIntersectionHelper::IsRayIntersectingCube(rayOrigin, rayDirection, block->GetPosition(), 1.0f);
-
-				if (r.IsIntersecting && r.Distance < closestDistance)
-				{
-					closest = block;
-					closestDistance = r.Distance;
-
-				}
-			}
-		}
-
-		if (closest != nullptr)
-		{
-			world.GetWorldDelta()->AddOrModifyDelta(closest->GetPosition(), BlockType::None);
-			closest->SetVisibility(false);
-		}
-	}
-	else if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
-	{
-		Log::WriteLog("Right mouse click", Info);
-		FirstPersonCamera* c = static_cast<FirstPersonCamera*>(activeCamera);
-		if (c == nullptr) 
-		{
-			return;
-		}
-
-		glm::vec3 rayOrigin = c->GetPosition();
-		glm::vec3 rayDirection = glm::normalize(c->GetCameraDirection());
-
-		std::vector<BlockIntersectionResult> hits = std::vector<BlockIntersectionResult>();
-
-		std::vector<Chunk>* chunks = world.GetChunks();
-
-		// Find all intersecting blocks both visible and invisible
-		for (int i = 0; i < chunks->size(); i++)
-		{
-			std::vector<Block*> blocks = chunks->at(i).GetBlocks();
-			for (auto block : blocks)
-			{
-				RayIntersectionResult r = RayIntersectionHelper::IsRayIntersectingCube(rayOrigin, rayDirection, block->GetPosition(), 1.0f);
-
-				if (r.IsIntersecting)
-				{
-					BlockIntersectionResult br = BlockIntersectionResult();
-					br.Distance = r.Distance;
-					br.block = block;
-					br.IsIntersecting = true;
-					hits.push_back(br);
-				}
-			}
-		}
-
-		// Search our hits for the closest visible object. The next closest invisible object will be the one we want to make visible
-		bool foundVisible = false;
-		std::sort(hits.begin(), hits.end());
-		for (int i = 1; i < hits.size(); i++)
-		{
-			if (hits[i].block->IsVisible())
-			{
-				foundVisible = true;
-			}
-			if (foundVisible)
-			{
-				Block* block = hits[i - 1].block;
-				world.GetWorldDelta()->AddOrModifyDelta(block->GetPosition(), BlockType::Grass);
-				block->SetVisibility(true);
-				return;
-			}
-		}
-	}
+	player.HandlePlayerInput(&world, window, button, action, mods);
 }

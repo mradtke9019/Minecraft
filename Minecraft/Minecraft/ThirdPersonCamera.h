@@ -16,7 +16,7 @@ public:
 	ThirdPersonCamera(glm::vec3 position);
 	~ThirdPersonCamera();
 	glm::mat4* GetViewTransform();
-	void HandleKeyboardInput(ThirdPersonCamera::Movement, float DeltaTime);
+	void HandlePlayerMovement(ThirdPersonCamera::Movement, float DeltaTime);
 	void UpdateCameraVectors();
 	void ProcessMouseMovement(float, float, GLboolean);
 

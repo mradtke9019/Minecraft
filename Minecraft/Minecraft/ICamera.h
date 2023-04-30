@@ -30,6 +30,8 @@ public:
 
 	virtual glm::vec3 GetCameraUp() = 0;
 
+	virtual void UpdateCameraVectors() = 0;
+
 	static glm::mat4 FixedViewCamera()
 	{
 		glm::vec3 cameraPos = glm::vec3(0.0f, 10.0f, 5.0f);

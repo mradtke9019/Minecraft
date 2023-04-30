@@ -13,21 +13,15 @@ private:
 	glm::vec3 Right;
 	glm::vec3 Target;
 	glm::mat4 View;
-	float MovementSpeed;
-	float MouseSensitivity;
 	Frustum frustum;
 
 public:
-
-	enum Movement { LEFT, RIGHT, FWD, BACK, UP, DOWN };
 
 	FirstPersonCamera();
 	FirstPersonCamera(glm::vec3 position);
 	~FirstPersonCamera();
 	glm::mat4* GetViewTransform();
-	void HandleKeyboardInput(FirstPersonCamera::Movement, float DeltaTime);
 	void UpdateCameraVectors();
-	void ProcessMouseMovement(float, float, GLboolean);
 	Frustum& GetFrustum();
 	glm::vec3 GetCameraDirection();
 	glm::vec3 GetCameraRight();
