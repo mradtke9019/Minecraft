@@ -81,7 +81,8 @@ void UpdateViewData() {
 void LoadShaders()
 {
 	//activeShader = new Shader("./blinnPhong.vert", "./blinnPhong.frag");
-	activeShader = new Shader("./textureTest.vert", "./textureTest.frag");
+	//activeShader = new Shader("./textureTest.vert", "./textureTest.frag");
+	activeShader = new Shader("./BlinnPhongLighting.vert", "./BlinnPhongLighting.frag");
 }
 
 
