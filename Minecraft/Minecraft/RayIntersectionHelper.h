@@ -4,6 +4,30 @@
 struct RayIntersectionResult {
     bool IsIntersecting;
     float Distance;
+
+    bool operator < (const RayIntersectionResult& other) const
+    {
+        return (Distance < other.Distance);
+    }
+
+    bool operator > (const RayIntersectionResult& other) const
+    {
+        return (Distance > other.Distance);
+    }
+};
+
+struct BlockIntersectionResult : public RayIntersectionResult
+{
+    Block* block;
+
+    bool operator < (const BlockIntersectionResult& other) const
+    {
+        return (Distance < other.Distance);
+    }
+    bool operator > (const BlockIntersectionResult& other) const
+    {
+        return (Distance > other.Distance);
+    }
 };
 
 class RayIntersectionHelper

@@ -22,7 +22,8 @@
 #include "RayIntersectionHelper.h"
 #include "Texture.h"
 #include "Projection.h"
-#include "WorldDelta.h"
+#include "World.h"
+#include "Player.h"
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
@@ -31,13 +32,11 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 //int Height;
 using namespace std;
 
-WorldDelta worldDelta = WorldDelta();
+World world = World();
 
-std::vector<Chunk*> chunks;
 Block* b;
 Shader* activeShader;
-//ICamera* activeCamera;
-FirstPersonCamera* activeCamera = new FirstPersonCamera(glm::vec3(0.0f, 0.0f, -5.0f));
+Player player = Player();
 LightSource* lighting;
 Texture* testTex; 
 std::vector<Texture*> testTexs;
@@ -69,66 +68,14 @@ void display(GLFWwindow* window)
 	//activeShader->SetUniformMatrix4fv("projection", &projection);
 	
 	// Remove chunks if they are too far away
-	glm::vec3 PlayerChunkCoordinate = Chunk::GlobalToChunkCoordinate(activeCamera->GetPosition());
-	chunks.erase(std::remove_if(chunks.begin(), chunks.end(),
-		[&](Chunk* c) 
-		{
-			float distance = glm::distance(PlayerChunkCoordinate, c->GetPosition());
-			if (distance > Constants::RADIUS_GENERATION)
-				return true;
-			return false;
-		}), chunks.end());
-
-	// Add new chunks to load based on the current player position.
-	// Do a loop for coordinates around the player to see if we can add any chunks.
-	for (int i = -Constants::RADIUS_GENERATION; i < Constants::RADIUS_GENERATION; i++)
-	{
-		for (int j = -Constants::RADIUS_GENERATION; j < Constants::RADIUS_GENERATION; j++)
-		{
-			glm::vec3 chunkCoordinate = glm::vec3(PlayerChunkCoordinate.x,0, PlayerChunkCoordinate.z) + glm::vec3(i, 0, j);
-			float distance = glm::distance(PlayerChunkCoordinate, chunkCoordinate);
-			if (distance > Constants::RADIUS_GENERATION)
-				continue;
-
-			auto chunk = std::find_if(
-				chunks.begin(),
-				chunks.end(),
-				[&](Chunk* c) {
-					return c->GetPosition() == chunkCoordinate;
-				});
-
-			if (chunk != chunks.end())
-			{
-			}
-			else
-			{
-				chunks.push_back(new Chunk(chunkCoordinate, *b, worldDelta));
-			}
-
-		}
-	}
-
-	for (auto c : chunks)
-	{
-		float distance = glm::distance(activeCamera->GetPosition(), c->GetChunkGlobalCoordinate());
-		
-		if (distance > Constants::RADIUS_GENERATION)
-		{
-			//v.erase(std::remove_if(v.begin(), v.end(),
-			//	[](int i) { return i < 10; }), v.end());
-		}
-	}
-
-	for (auto c : chunks)
-	{
-		c->Draw();
-	}
+	world.UpdateByPlayerPosition(player.GetCamera()->GetPosition(),b, true);
+	world.Draw();
 
 }
 
 void UpdateViewData() {
-	activeShader->SetUniformMatrix4fv("view", activeCamera->GetViewTransform());
-	activeShader->SetUniformVec3("ViewPosition", activeCamera->GetPosition());
+	activeShader->SetUniformMatrix4fv("view", player.GetCamera()->GetViewTransform());
+	activeShader->SetUniformVec3("ViewPosition", player.GetCamera()->GetPosition());
 }
 
 void LoadShaders()
@@ -154,15 +101,15 @@ void LoadObjects()
 
 	//chunk = new Chunk(glm::vec3(0,0,0), *b);
 
-	chunks = std::vector<Chunk*>();
-	//chunks.push_back(chunk);
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			chunks.push_back(new Chunk(glm::vec3(i, 0, j), *b, worldDelta));
-		}
-	}
+	//chunks = std::vector<Chunk*>();
+	////chunks.push_back(chunk);
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	for (int j = 0; j < 3; j++)
+	//	{
+	//		chunks.push_back(new Chunk(glm::vec3(i, 0, j), *b, worldDelta));
+	//	}
+	//}
 }
 
 void initLight()
@@ -222,42 +169,42 @@ void processInput()
 		case GLFW_KEY_W:
 			if (pressed)
 			{
-				activeCamera->HandleKeyboardInput(FirstPersonCamera::FWD, bookKeeper->GetDeltaTime());
+				player.HandlePlayerMovement(FWD, bookKeeper->GetDeltaTime());
 				UpdateViewData();
 			}
 			break;
 		case GLFW_KEY_S:
 			if (pressed)
 			{
-				activeCamera->HandleKeyboardInput(FirstPersonCamera::BACK, bookKeeper->GetDeltaTime());
+				player.HandlePlayerMovement(BACK, bookKeeper->GetDeltaTime());
 				UpdateViewData();
 			}
 			break;
 		case GLFW_KEY_A:
 			if (pressed)
 			{
-				activeCamera->HandleKeyboardInput(FirstPersonCamera::LEFT, bookKeeper->GetDeltaTime());
+				player.HandlePlayerMovement(LEFT, bookKeeper->GetDeltaTime());
 				UpdateViewData();
 			}
 			break;
 		case GLFW_KEY_D:
 			if (pressed)
 			{
-				activeCamera->HandleKeyboardInput(FirstPersonCamera::RIGHT, bookKeeper->GetDeltaTime());
+				player.HandlePlayerMovement(RIGHT, bookKeeper->GetDeltaTime());
 				UpdateViewData();
 			}
 			break;
 		case GLFW_KEY_C:
 			if (pressed)
 			{
-				activeCamera->HandleKeyboardInput(FirstPersonCamera::DOWN, bookKeeper->GetDeltaTime());
+				player.HandlePlayerMovement(DOWN, bookKeeper->GetDeltaTime());
 				UpdateViewData();
 			}
 			break;
 		case GLFW_KEY_SPACE:
 			if (pressed)
 			{
-				activeCamera->HandleKeyboardInput(FirstPersonCamera::UP, bookKeeper->GetDeltaTime());
+				player.HandlePlayerMovement(UP, bookKeeper->GetDeltaTime());
 				UpdateViewData();
 			}
 			break;
@@ -410,51 +357,11 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 	lastX = xpos;
 	lastY = ypos;
 
-	activeCamera->ProcessMouseMovement(xoffset, yoffset, true);
+	player.ProcessMouseMovement(xoffset, yoffset, true);
 	UpdateViewData();
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-	{
-		Log::WriteLog("Left mouse click", Info);
-		FirstPersonCamera* c = static_cast<FirstPersonCamera*>(activeCamera);
-		if (c == nullptr) {
-			return;
-		}
-
-		glm::vec3 rayOrigin = c->GetPosition();
-		glm::vec3 rayDirection = c->GetCameraDirection();
-		Block* closest = nullptr;
-		Chunk* closestChunk = nullptr;
-		float closestDistance = std::numeric_limits<float>::max();
-
-		// Check for intersection with each triangle in the model
-		for (int i = 0; i < chunks.size(); i++)
-		{
-			std::vector<Block*> blocks =  chunks[i]->GetBlocks();
-			for (auto block : blocks)
-			{
-				if (!block->IsVisible())
-				{
-					continue;
-				}
-				RayIntersectionResult r = RayIntersectionHelper::IsRayIntersectingCube(rayOrigin, rayDirection, block->GetPosition(), 1.0f);
-
-				if (r.IsIntersecting && r.Distance < closestDistance)
-				{
-					closest = block;
-					closestDistance = r.Distance;
-					closestChunk = chunks[i];
-				}
-			}
-		}
-
-		if (closest != nullptr)
-		{
-			worldDelta.AddOrModifyDelta(closest->GetPosition(), BlockType::None);
-			closest->SetVisibility(false);
-		}
-	}
+	player.HandlePlayerInput(&world, window, button, action, mods);
 }
