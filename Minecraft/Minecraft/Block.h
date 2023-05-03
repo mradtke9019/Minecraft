@@ -30,15 +30,20 @@ private:
 	float* cubeData;
 	const int NumFaces = 6;
 	unsigned int CubeVAO, CubeVBO;
-
+	BlockType BlockTexture;
+	std::map<BlockType, Texture*>* TextureMap;
 
 public:
-	Block(Shader* s, std::vector<Texture*> tex);
+	Block(Shader* s, std::map<BlockType, Texture*>* texMap);
 
 	void SetVisibility(bool v);
 
 	bool IsVisible();
 
 	void Draw();
+
+	BlockType GetBlockType();
+
+	void SetBlockType(BlockType bType);
 
 };

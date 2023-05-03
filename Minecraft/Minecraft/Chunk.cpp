@@ -1,4 +1,5 @@
 #include "Chunk.h"
+#include <ctime>
 
 Chunk::Chunk(glm::vec3 chunkCoordinate, Block block, WorldDelta deltas)
 {
@@ -26,6 +27,16 @@ Chunk::Chunk(glm::vec3 chunkCoordinate, Block block, WorldDelta deltas)
 				glm::vec3 blockWorldPosition = GetBlockGlobalCoordinate(blockCoordinate);
 				newBlock.SetPosition(blockWorldPosition);
 
+
+				std::srand(static_cast<unsigned int>(std::time(nullptr)));
+
+				// Generate a random number between 1 and the number of enum values minus 1
+				int randomIndex = std::rand() % (static_cast<int>(Carpet) - 1) + 1;
+
+				// Convert the random index to an enum value
+				BlockType randomBlockType = static_cast<BlockType>(randomIndex);
+
+				newBlock.SetBlockType(randomBlockType);
 
 				//int h = glm::floor(height * 16);
 				if (j > height)
