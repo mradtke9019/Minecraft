@@ -1,4 +1,5 @@
 #pragma once
+class World;
 #include "ICamera.h"
 #include "FirstPersonCamera.h"
 #include "World.h"
