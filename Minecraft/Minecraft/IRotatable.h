@@ -13,6 +13,7 @@ enum RotationType{Euler, AxisAngle};
 /// </summary>
 class IRotatable {
 private:
+	glm::mat4 RotationMatrix;
 	/// <summary>
 	/// The rotation method to be used by this object such as using euler angles or the axis angle method.
 	/// </summary>
@@ -44,25 +45,7 @@ private:
 	/// </summary>
 	float angle;
 
-
-public:
-	IRotatable()
-	{
-		rotateX = 0;
-		rotateY = 0;
-		rotateZ = 0;
-
-		pivot = glm::vec3(0, 0, 0);
-		Axis = glm::vec3(0, 0, 0);
-		angle = 0.0f;
-		rotationType = Euler;
-	}
-
-	/// <summary>
-	/// Returns the rotation matrix about a pivot and the currently chosen rotation type.
-	/// </summary>
-	/// <returns></returns>
-	glm::mat4 GetRotationMatrix()
+	void UpdateRotationMatrix()
 	{
 		glm::mat4 result = glm::mat4(1);
 		switch (rotationType)
@@ -78,7 +61,8 @@ public:
 			if (glm::length(Axis) <= 0 || Axis == glm::vec3(0, 0, 0))
 			{
 				Log::WriteLog("Axis angle using the 0 vector or the length of the axis is less than or equal to 0.", Warning);
-				return glm::mat4(1);
+				RotationMatrix = glm::mat4(1);
+				return;
 			}
 
 			result = glm::toMat4(glm::angleAxis(angle, Axis));
@@ -89,14 +73,42 @@ public:
 			break;
 		}
 		if (pivot == glm::vec3(0))
-			return result;
+		{
+			RotationMatrix = result;
+			return;
+		}
 
-		return glm::translate(glm::mat4(1), pivot) * result * glm::translate(glm::mat4(1), -pivot);
+		RotationMatrix = glm::translate(glm::mat4(1), pivot) * result * glm::translate(glm::mat4(1), -pivot);
+	}
+
+
+public:
+	IRotatable()
+	{
+		rotateX = 0;
+		rotateY = 0;
+		rotateZ = 0;
+
+		pivot = glm::vec3(0, 0, 0);
+		Axis = glm::vec3(0, 0, 0);
+		angle = 0.0f;
+		rotationType = Euler;
+		UpdateRotationMatrix();
+	}
+
+	/// <summary>
+	/// Returns the rotation matrix about a pivot and the currently chosen rotation type.
+	/// </summary>
+	/// <returns></returns>
+	glm::mat4 GetRotationMatrix()
+	{
+		return RotationMatrix;
 	}
 
 	void SetPivot(glm::vec3 p)
 	{
 		pivot = p;
+		UpdateRotationMatrix();
 	}
 
 	glm::vec3 GetPivot()
@@ -112,6 +124,7 @@ public:
 	void SetRotationMethod(RotationType type)
 	{
 		rotationType = type;
+		UpdateRotationMatrix();
 	}
 
 	float& GetRotateX()
@@ -131,31 +144,37 @@ public:
 	void SetRotateX(float x)
 	{
 		rotateX = x;
+		UpdateRotationMatrix();
 	}
 
 	void SetRotateY(float y)
 	{
 		rotateY = y;
+		UpdateRotationMatrix();
 	}
 
 	void SetRotateZ(float z)
 	{
 		rotateZ = z;
+		UpdateRotationMatrix();
 	}
 
 	void RotateX(float x)
 	{
 		rotateX += x;
+		UpdateRotationMatrix();
 	}
 
 	void RotateY(float y)
 	{
 		rotateY += y;
+		UpdateRotationMatrix();
 	}
 
 	void RotateZ(float z)
 	{
 		rotateZ += z;
+		UpdateRotationMatrix();
 	}
 
 	void SetAxis(glm::vec3 a)
@@ -164,16 +183,19 @@ public:
 			Axis = -Axis;
 		else
 			Axis = glm::normalize(a);
+		UpdateRotationMatrix();
 	}
 
 	void SetAxisAngle(float a)
 	{
 		angle = a;
+		UpdateRotationMatrix();
 	}
 
 	void IncrementAxisAngle(float a)
 	{
 		angle += a;
+		UpdateRotationMatrix();
 	}
 
 	float GetAxisAngle()
