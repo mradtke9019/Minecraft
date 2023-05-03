@@ -95,19 +95,6 @@ void Block::Draw()
     glBindVertexArray(CubeVAO);
     
 
-    //for (int i = 0; i < NumFaces; i++) 
-    //{
-    //    Textures[i]->Bind();
-    //    glDrawArrays(GL_TRIANGLES, i * numVertices, numVertices);
-    //    //glDrawArrays(GL_TRIANGLES, 0, 36);
-    //    //glBindVertexArray(0);
-    //}
-
-    //Texture* tex = (*TextureMap)[BlockTexture];
-    ////Texture* tex = TextureMap[BlockTexture];
-    //tex->Bind();
-
-
     for (int i = 0; i < NumVerticesPerFace; i++) 
     {   
         if (i == 5 && BlockTexture == BlockType::Grass) {
@@ -122,23 +109,6 @@ void Block::Draw()
         //glDrawArrays(GL_TRIANGLES, 0, 36);
         //glBindVertexArray(0);
     }
-
-
-  
-    //glBindVertexArray(CubeVAO);
-    //Texture* tex2 = (*TextureMap)[BlockType::Gold];
-    ////Texture* tex = TextureMap[BlockTexture];
-    //tex2->Bind();
-    //glDrawArrays(GL_TRIANGLES, 0, 36);
-
-
-    //Texture* tex = (*TextureMap)[BlockTexture];
-    ////Texture* tex = TextureMap[BlockTexture];
-    //tex->Bind();
-    //glDrawArrays(GL_TRIANGLES, 0, 36);
-
-
-    //tex->Unbind();
 
 
    /* switch (BlockTexture)
@@ -174,9 +144,6 @@ void Block::Draw()
     }*/
     //glBindVertexArray(0);
 
-    //Textures[];
-
-    //glBindVertexArray(0);
 }
 
 BlockType Block::GetBlockType()
