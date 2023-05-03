@@ -129,7 +129,8 @@ void initTexture() {
 	{BlockType::Gold, new Texture("./GoldTexture.png")},
 	{BlockType::Coal, new Texture("./CoalTexture.png")},
 	{BlockType::Diamond, new Texture("./DiamondTexture.png")},
-	{BlockType::Carpet, new Texture("./RedstoneTexture.png")}
+	{BlockType::Carpet, new Texture("./RedstoneTexture.png")},
+	{BlockType::GrassTop, new Texture("./GrassTopTexture.png")}
 	});
 
 	activeShader->SetUniform1i("TextureSlot", 0);

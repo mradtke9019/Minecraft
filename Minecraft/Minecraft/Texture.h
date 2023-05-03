@@ -38,7 +38,7 @@ public:
     int& GetHeight();
     int& GetWidth();
     GLenum& GetTarget();
-    
+
     static void SetTextureSlot(int slot);
 
     void Bind(unsigned int slot = 0);

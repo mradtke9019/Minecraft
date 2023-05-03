@@ -71,8 +71,12 @@ GLenum& Texture::GetTarget()
 	return Target;
 }
 
+
 void Texture::SetTextureSlot(int slot)
 {
 	glActiveTexture(GL_TEXTURE0 + slot);
 }
+
+
+
 

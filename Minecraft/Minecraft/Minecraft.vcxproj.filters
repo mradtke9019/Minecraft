@@ -241,5 +241,8 @@
     <CopyFileToFolders Include="BlinnPhongLighting.vert">
       <Filter>Resource Files\Shaders</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="Textures\GrassTopTexture.png">
+      <Filter>Resource Files\Textures</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

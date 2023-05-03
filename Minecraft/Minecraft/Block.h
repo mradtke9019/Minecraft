@@ -15,7 +15,8 @@ enum BlockType
 	Gold,
 	Coal,
 	Diamond,
-	Carpet
+	Carpet,
+	GrassTop
 };
 
 class Block : public ITransformable
@@ -28,7 +29,7 @@ private:
 	//Store the cube data here.
 	//Layout: Vertex Positions, Texture Coordinates, Normal Vector
 	float* cubeData;
-	const int NumFaces = 6;
+	const int NumVerticesPerFace = 6;
 	unsigned int CubeVAO, CubeVBO;
 	BlockType BlockTexture;
 	std::map<BlockType, Texture*>* TextureMap;
@@ -45,5 +46,21 @@ public:
 	BlockType GetBlockType();
 
 	void SetBlockType(BlockType bType);
+
+	void SetTextureTop(BlockType blockTexture);
+	void SetTextureBottom(BlockType blockTexture);
+	void SetTextureLeft(BlockType blockTexture);
+	void SetTextureRight(BlockType blockTexture);
+	void SetTextureFront(BlockType blockTexture);
+	void SetTextureBack(BlockType blockTexture);
+
+	void DrawGrassTexture();
+	void DrawStoneTexture();
+	void DrawGoldTexture();
+	void DrawCoalTexture();
+	void DrawDiamondTexture();
+	void DrawCarpetTexture();
+
+
 
 };

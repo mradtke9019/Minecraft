@@ -44,6 +44,10 @@ Chunk::Chunk(glm::vec3 chunkCoordinate, Block block, WorldDelta deltas)
 					newBlock.SetVisibility(false);
 				}
 
+				if (j >= height - 2) {
+					newBlock.SetBlockType(BlockType::Grass);
+				}
+
 				Delta* d = deltas.GetDelta(blockWorldPosition);
 				if (d != nullptr)
 				{

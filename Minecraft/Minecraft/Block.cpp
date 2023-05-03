@@ -89,7 +89,6 @@ void Block::Draw()
 		return;
 	}
 	
-    int numVertices = 6;
 
     shader->Use();
     shader->SetUniformMatrix4fv("model", GetTransformPointer());
@@ -104,12 +103,75 @@ void Block::Draw()
     //    //glBindVertexArray(0);
     //}
 
-    Texture* tex = (*TextureMap)[BlockTexture];
-    //Texture* tex = TextureMap[BlockTexture];
-    tex->Bind();
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    tex->Unbind();
+    //Texture* tex = (*TextureMap)[BlockTexture];
+    ////Texture* tex = TextureMap[BlockTexture];
+    //tex->Bind();
 
+
+    for (int i = 0; i < NumVerticesPerFace; i++) 
+    {   
+        if (i == 5 && BlockTexture == BlockType::Grass) {
+            Texture* tex = (*TextureMap)[BlockType::GrassTop];
+            tex->Bind();
+            glDrawArrays(GL_TRIANGLES, i * NumVerticesPerFace, NumVerticesPerFace);
+            continue;
+        }
+        Texture* tex = (*TextureMap)[BlockTexture];
+        tex->Bind();
+        glDrawArrays(GL_TRIANGLES, i * NumVerticesPerFace, NumVerticesPerFace);
+        //glDrawArrays(GL_TRIANGLES, 0, 36);
+        //glBindVertexArray(0);
+    }
+
+
+  
+    //glBindVertexArray(CubeVAO);
+    //Texture* tex2 = (*TextureMap)[BlockType::Gold];
+    ////Texture* tex = TextureMap[BlockTexture];
+    //tex2->Bind();
+    //glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+    //Texture* tex = (*TextureMap)[BlockTexture];
+    ////Texture* tex = TextureMap[BlockTexture];
+    //tex->Bind();
+    //glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+    //tex->Unbind();
+
+
+   /* switch (BlockTexture)
+    {
+    case BlockType::None:
+        break;
+    case BlockType::Grass:
+        SetTextureTop(BlockType::Diamond);
+        SetTextureBottom(BlockType::Carpet);
+        break;
+    case BlockType::Stone:
+        SetTextureTop(BlockType::Diamond);
+        SetTextureBottom(BlockType::Carpet);
+        break;
+    case BlockType::Gold:
+        SetTextureTop(BlockType::Diamond);
+        SetTextureBottom(BlockType::Carpet);
+        break;
+    case BlockType::Coal:
+        SetTextureTop(BlockType::Diamond);
+        SetTextureBottom(BlockType::Carpet);
+        break;
+    case BlockType::Diamond:
+        SetTextureTop(BlockType::Diamond);
+        SetTextureBottom(BlockType::Carpet);
+        break;
+    case BlockType::Carpet:
+        SetTextureTop(BlockType::Diamond);
+        SetTextureBottom(BlockType::Carpet);
+        break;
+    default:
+        break;
+    }*/
     //glBindVertexArray(0);
 
     //Textures[];
@@ -135,4 +197,82 @@ void Block::SetVisibility(bool v)
 bool Block::IsVisible()
 {
 	return visible;
+}
+
+void Block::SetTextureTop(BlockType blockTexture)
+{
+    //vertices for top of cube are stored at the end of the VBO
+    //starting location in BVO is 30 i.e. 5 * 6 
+    Texture* tex = (*TextureMap)[blockTexture];
+    tex->Bind();
+    glDrawArrays(GL_TRIANGLES, 5 * NumVerticesPerFace, NumVerticesPerFace);
+    //tex->Unbind();
+}
+
+void Block::SetTextureBottom(BlockType blockTexture)
+{
+    Texture* tex = (*TextureMap)[blockTexture];
+    tex->Bind();
+    glDrawArrays(GL_TRIANGLES, 4 * NumVerticesPerFace, NumVerticesPerFace);
+}
+
+void Block::SetTextureLeft(BlockType blockTexture)
+{
+    Texture* tex = (*TextureMap)[blockTexture];
+    tex->Bind();
+    glDrawArrays(GL_TRIANGLES, 3 * NumVerticesPerFace, NumVerticesPerFace);
+}
+
+void Block::SetTextureRight(BlockType blockTexture)
+{
+    Texture* tex = (*TextureMap)[blockTexture];
+    tex->Bind();
+    glDrawArrays(GL_TRIANGLES, 2 * NumVerticesPerFace, NumVerticesPerFace);
+}
+
+void Block::SetTextureFront(BlockType blockTexture)
+{
+    Texture* tex = (*TextureMap)[blockTexture];
+    tex->Bind();
+    glDrawArrays(GL_TRIANGLES, 1 * NumVerticesPerFace, NumVerticesPerFace);
+}
+
+void Block::SetTextureBack(BlockType blockTexture)
+{
+    Texture* tex = (*TextureMap)[blockTexture];
+    tex->Bind();
+    glDrawArrays(GL_TRIANGLES, 0 * NumVerticesPerFace, NumVerticesPerFace);
+}
+
+
+void Block::DrawGrassTexture()
+{
+    Texture* tex = (*TextureMap)[BlockTexture];
+    //Texture* tex = TextureMap[BlockTexture];
+    tex->Bind();
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    tex->Unbind();
+
+   
+}
+
+void Block::DrawStoneTexture()
+{
+}
+
+void Block::DrawGoldTexture()
+{
+}
+
+void Block::DrawCoalTexture()
+{
+}
+
+void Block::DrawDiamondTexture()
+{
+}
+
+void Block::DrawCarpetTexture()
+{
 }
