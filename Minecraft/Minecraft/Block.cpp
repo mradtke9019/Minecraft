@@ -1,11 +1,17 @@
 #include "Block.h"
+#include "Constants.h"
 
-Block::Block(Shader* s, std::vector<Texture*> textures)
+Block::Block(Shader* s, std::map<BlockType, Texture*>* texMap)
 	: ITransformable()
 {
 	//model = m;
     shader = s;
 	visible = true;
+    BlockTexture = BlockType::Grass;
+    TextureMap = texMap;
+    
+
+
     int size = (288 + 1) * sizeof(float); // Size of array in bytes (add 1 for null terminator)
     cubeData = new float[288] {
   
@@ -70,9 +76,9 @@ Block::Block(Shader* s, std::vector<Texture*> textures)
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
         glEnableVertexAttribArray(2);     
 
-        for (int i = 0; i < textures.size(); i++) {
+       /* for (int i = 0; i < textures.size(); i++) {
             Textures.push_back(textures[i]);
-        }
+        }*/
    
 }
 
@@ -89,15 +95,36 @@ void Block::Draw()
     shader->SetUniformMatrix4fv("model", GetTransformPointer());
     glBindVertexArray(CubeVAO);
     
-    for (int i = 0; i < NumFaces; i++) 
-    {
-        Textures[i]->Bind();
-        glDrawArrays(GL_TRIANGLES, i * numVertices, numVertices);
-        //glDrawArrays(GL_TRIANGLES, 0, 36);
-        //glBindVertexArray(0);
-    }
-    //glDrawArrays(GL_TRIANGLES, 0, 36);
-    glBindVertexArray(0);
+
+    //for (int i = 0; i < NumFaces; i++) 
+    //{
+    //    Textures[i]->Bind();
+    //    glDrawArrays(GL_TRIANGLES, i * numVertices, numVertices);
+    //    //glDrawArrays(GL_TRIANGLES, 0, 36);
+    //    //glBindVertexArray(0);
+    //}
+
+    Texture* tex = (*TextureMap)[BlockTexture];
+    //Texture* tex = TextureMap[BlockTexture];
+    tex->Bind();
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    tex->Unbind();
+
+    //glBindVertexArray(0);
+
+    //Textures[];
+
+    //glBindVertexArray(0);
+}
+
+BlockType Block::GetBlockType()
+{
+    return BlockTexture;
+}
+
+void Block::SetBlockType(BlockType bType)
+{
+    BlockTexture = bType;
 }
 
 void Block::SetVisibility(bool v)

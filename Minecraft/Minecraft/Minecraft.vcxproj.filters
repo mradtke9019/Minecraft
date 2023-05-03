@@ -235,5 +235,11 @@
     <CopyFileToFolders Include="Textures\GoldTexture.png">
       <Filter>Resource Files\Textures</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="BlinnPhongLighting.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="BlinnPhongLighting.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

@@ -40,6 +40,9 @@ Player player = Player();
 LightSource* lighting;
 Texture* testTex; 
 std::vector<Texture*> testTexs;
+
+std::map<BlockType, Texture*>* textureMap;
+
 Utility* bookKeeper;
 bool firstMouse = true;
 float lastX; //= SCR_WIDTH / 2.0f;
@@ -81,7 +84,8 @@ void UpdateViewData() {
 void LoadShaders()
 {
 	//activeShader = new Shader("./blinnPhong.vert", "./blinnPhong.frag");
-	activeShader = new Shader("./textureTest.vert", "./textureTest.frag");
+	//activeShader = new Shader("./textureTest.vert", "./textureTest.frag");
+	activeShader = new Shader("./BlinnPhongLighting.vert", "./BlinnPhongLighting.frag");
 }
 
 
@@ -97,7 +101,7 @@ void LoadCameras()
 
 void LoadObjects()
 {
-	b = new Block(activeShader, testTexs);
+	b = new Block(activeShader, textureMap);
 
 	//chunk = new Chunk(glm::vec3(0,0,0), *b);
 
@@ -118,16 +122,16 @@ void initLight()
 }
 
 void initTexture() {
-	const char* path = "./DiamondTexture.png";
 
-	std::vector<const char*> paths = {"./CoalTexture.png", "./DiamondTexture.png", "./DirtTexture.png", "./GoldTexture.png", "./RedstoneTexture.png", "./SilverTexture.png"};
+	textureMap = new std::map<BlockType, Texture*>({
+	{BlockType::Grass, new Texture("./DirtTexture.png")},
+	{BlockType::Stone, new Texture("./SilverTexture.png")},
+	{BlockType::Gold, new Texture("./GoldTexture.png")},
+	{BlockType::Coal, new Texture("./CoalTexture.png")},
+	{BlockType::Diamond, new Texture("./DiamondTexture.png")},
+	{BlockType::Carpet, new Texture("./RedstoneTexture.png")}
+	});
 
-	for (int i = 0; i < paths.size(); i++) 
-	{
-		testTexs.push_back(new Texture(paths[i]));
-	}
-
-	//testTex = new Texture(path);
 	activeShader->SetUniform1i("TextureSlot", 0);
 }
 

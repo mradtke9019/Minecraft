@@ -231,6 +231,14 @@
     <CopyFileToFolders Include="Textures\RedstoneTexture.png" />
     <CopyFileToFolders Include="Textures\SilverTexture.png" />
   </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="BlinnPhongLighting.frag">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="BlinnPhongLighting.vert">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
