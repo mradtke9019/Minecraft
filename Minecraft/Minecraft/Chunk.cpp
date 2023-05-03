@@ -1,7 +1,8 @@
 #include "Chunk.h"
 #include <ctime>
 
-Chunk::Chunk(glm::vec3 chunkCoordinate, Block block, WorldDelta deltas)
+Chunk::Chunk(glm::vec3 chunkCoordinate, Block block, WorldDelta deltas):
+	visible(true)
 {
 	min = (float)Constants::CHUNK_SIZE * chunkCoordinate;
 	max = (float)Constants::CHUNK_SIZE * chunkCoordinate + glm::vec3(Constants::CHUNK_SIZE, Constants::CHUNK_SIZE, Constants::CHUNK_SIZE);
@@ -108,6 +109,21 @@ std::vector<std::vector<std::vector<Block>>>* Chunk::GetBlockData()
 	return &blocks;
 }
 
+glm::vec3* Chunk::GetChunkGlobalCorners()
+{
+	glm::vec3 corners[8];
+	corners[0] = this->GetPosition();
+	corners[1] = corners[0] + glm::vec3(1, 0, 0);
+	corners[2] = corners[0] + glm::vec3(0, 1, 0);
+	corners[3] = corners[0] + glm::vec3(0, 0, 1);
+	corners[4] = corners[0] + glm::vec3(1, 1, 0);
+	corners[5] = corners[0] + glm::vec3(1, 0, 1);
+	corners[6] = corners[0] + glm::vec3(0, 1, 1);
+	corners[7] = corners[0] + glm::vec3(1, 1, 1);
+
+	return corners;
+}
+
 /// <summary>
 /// Returns the block at the corresponding local coordinate.
 /// </summary>
@@ -169,8 +185,19 @@ bool Chunk::ValidBlock(glm::vec3 localCoordinate)
 	return true;
 }
 
+
+void Chunk::SetVisibility(bool visible)
+{
+	this->visible = visible;
+}
+
 void Chunk::Draw()
 {
+	if (!visible)
+	{
+		return;
+	}
+
 	for (int i = 0; i < blocks.size(); i++)
 	{
 		for (int j = 0; j < blocks[i].size(); j++)

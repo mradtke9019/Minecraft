@@ -1,8 +1,11 @@
 #pragma once
+class Player;
 #include "Chunk.h"
 #include "WorldDelta.h"
+#include "Player.h"
 #include <glm/glm.hpp>
 #include <vector>
+#include <glm/gtx/vector_angle.hpp>
 
 class World {
 private:
@@ -40,12 +43,12 @@ public:
 	/// <summary>
 	/// Converts a global coordinate to the corresponding chunk coordinate
 	/// </summary>
-	glm::vec3 GlobalToChunkCoordinate(glm::vec3 globalCoord);
+	glm::vec3 GlobalToChunkCoordinate(glm::vec3 globalCoord, bool t = true);
 
 	/// <summary>
 	/// Updates the world based on the players current position
 	/// </summary>
-	void UpdateByPlayerPosition(glm::vec3 playerChunkCoordinate, Block* defaultBlock, bool isGlobal);
+	void UpdateByPlayerPosition(Player* player, Block* defaultBlock, bool isGlobal);
 
 	void Draw();
 };

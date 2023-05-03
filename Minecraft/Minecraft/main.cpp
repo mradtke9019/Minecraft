@@ -71,7 +71,7 @@ void display(GLFWwindow* window)
 	//activeShader->SetUniformMatrix4fv("projection", &projection);
 	
 	// Remove chunks if they are too far away
-	world.UpdateByPlayerPosition(player.GetCamera()->GetPosition(),b, true);
+	world.UpdateByPlayerPosition(&player,b, true);
 	world.Draw();
 
 }

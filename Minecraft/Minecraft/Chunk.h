@@ -9,6 +9,7 @@
 class Chunk : public ITransformable, public AABB
 {
 private:
+	bool visible;
 	std::vector<std::vector<std::vector<Block>>> blocks;
 
 public:
@@ -25,11 +26,15 @@ public:
 
 	std::vector<std::vector<std::vector<Block>>>* GetBlockData();
 
+	glm::vec3* GetChunkGlobalCorners();
+
 	glm::vec3 GetChunkGlobalCoordinate();
 
 	glm::vec3 GetBlockGlobalCoordinate(glm::vec3 localCoordinate);
 
 	bool ValidBlock(glm::vec3 localCoordinate);
+	
+	void SetVisibility(bool);
 
 	void Draw();
 

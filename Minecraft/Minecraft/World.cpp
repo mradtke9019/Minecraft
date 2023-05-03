@@ -47,16 +47,20 @@ Block* World::GetBlock(glm::vec3 chunkCoord, glm::vec3 blockCoord)
 	return c->GetBlock(blockCoord);
 }
 
-glm::vec3 World::GlobalToChunkCoordinate(glm::vec3 globalCoord)
+glm::vec3 World::GlobalToChunkCoordinate(glm::vec3 globalCoord, bool round)
 {
 	glm::vec3 chunkCoord = globalCoord / (float)Constants::CHUNK_SIZE;
-	chunkCoord = glm::floor(chunkCoord);
+	if (round)
+	{
+		chunkCoord = glm::floor(chunkCoord);
+	}
 
 	return chunkCoord;
 }
 
-void World::UpdateByPlayerPosition(glm::vec3 playerChunkCoordinate, Block* defaultBlock, bool isGlobal)
+void World::UpdateByPlayerPosition(Player* player, Block* defaultBlock, bool isGlobal)
 {
+	glm::vec3 playerChunkCoordinate = player->GetCamera()->GetPosition();
 	if (isGlobal)
 	{
 		playerChunkCoordinate = GlobalToChunkCoordinate(playerChunkCoordinate);
@@ -94,6 +98,38 @@ void World::UpdateByPlayerPosition(glm::vec3 playerChunkCoordinate, Block* defau
 				chunks.push_back(Chunk(chunkCoordinate, *defaultBlock, worldDelta));
 			}
 		}
+	}
+
+	// Cull all chunks that are not within the direction the person is facing in the xz plane
+	glm::vec3 playerChunkPosition = World::GlobalToChunkCoordinate(player->GetCamera()->GetPosition(), false);
+	glm::vec2 camPos = glm::vec2(playerChunkPosition.x, playerChunkPosition.z);
+	glm::vec2 camDir = glm::normalize(glm::vec2(player->GetCamera()->GetCameraDirection().x, player->GetCamera()->GetCameraDirection().z));
+
+	for (int i = 0; i < chunks.size(); i++)
+	{
+		// Consider each corner of the chunk to make sure we dont accidentally cull something that is visible.
+		// Assume not visible until one of the corners is visible.
+		glm::vec3* corners = chunks[i].GetChunkGlobalCorners();
+		bool visible = false;
+		for (int i = 0; i < 8; i++)
+		{
+			glm::vec2 chunkPos = glm::vec2((corners + i)->x, (corners + i)->z);
+
+			glm::vec2 diff = chunkPos - camPos;
+			float dot = glm::dot(diff, camDir);
+			float angle = glm::angle(diff, camDir);
+			if (angle > glm::pi<float>() / 2.0f && angle < glm::pi<float>() * 3.0f / 2.0f)
+			{
+				//chunks[i].SetVisibility(false);
+			}
+			else
+			{
+				visible = true;
+				break;
+			}
+		}
+
+		chunks[i].SetVisibility(visible);
 	}
 }
 
