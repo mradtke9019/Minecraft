@@ -30,9 +30,14 @@ struct BlockIntersectionResult : public RayIntersectionResult
     }
 };
 
+/// <summary>
+/// https://stackoverflow.com/questions/74880815/ray-cube-intersection-c
+/// </summary>
 class RayIntersectionHelper
 {
 public:
+
+
 
     /// <summary>
     /// Determine if a point is in a cube given its center coordinate and the size of the cube.
