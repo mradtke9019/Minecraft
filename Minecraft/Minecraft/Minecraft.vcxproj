@@ -243,9 +243,9 @@
     <CopyFileToFolders Include="Textures\GrassTopTexture.png" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Textures\DirtTexture1.png" />
-    <Image Include="Textures\DirtTexture2.png" />
-    <Image Include="Textures\DirtTexture3.png" />
+    <CopyFileToFolders Include="Textures\DirtTexture1.png" />
+    <CopyFileToFolders Include="Textures\DirtTexture2.png" />
+    <CopyFileToFolders Include="Textures\DirtTexture3.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

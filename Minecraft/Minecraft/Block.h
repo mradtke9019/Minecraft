@@ -16,7 +16,10 @@ enum BlockType
 	Coal,
 	Diamond,
 	Carpet,
-	GrassTop
+	GrassTop,
+	Grass2,
+	Grass3,
+	Grass4
 };
 
 class Block : public ITransformable

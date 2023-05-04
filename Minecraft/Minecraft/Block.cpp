@@ -97,6 +97,19 @@ void Block::Draw()
 
     for (int i = 0; i < NumVerticesPerFace; i++) 
     {   
+       
+        if (i == 2 && BlockTexture == BlockType::Grass) {
+            Texture* tex = (*TextureMap)[BlockType::Grass2];
+            tex->Bind();
+            glDrawArrays(GL_TRIANGLES, i * NumVerticesPerFace, NumVerticesPerFace);
+            continue;
+        }
+        if (i == 3 && BlockTexture == BlockType::Grass) {
+            Texture* tex = (*TextureMap)[BlockType::Grass2];
+            tex->Bind();
+            glDrawArrays(GL_TRIANGLES, i * NumVerticesPerFace, NumVerticesPerFace);
+            continue;
+        }
         if (i == 5 && BlockTexture == BlockType::Grass) {
             Texture* tex = (*TextureMap)[BlockType::GrassTop];
             tex->Bind();

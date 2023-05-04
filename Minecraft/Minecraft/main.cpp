@@ -132,6 +132,9 @@ void initTexture() {
 	{BlockType::Coal, new Texture("./CoalTexture.png")},
 	{BlockType::Diamond, new Texture("./DiamondTexture.png")},
 	{BlockType::Carpet, new Texture("./RedstoneTexture.png")},
+	{BlockType::Grass2, new Texture("./DirtTexture1.png")},
+	{BlockType::Grass3, new Texture("./DirtTexture2.png")},
+	{BlockType::Grass4, new Texture("./DirtTexture3.png")},
 	{BlockType::GrassTop, new Texture("./GrassTopTexture.png")}
 	});
 
