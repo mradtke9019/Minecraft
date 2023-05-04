@@ -14,7 +14,7 @@ void main()
     
     vec3 color = texture(mTexture, TexCoord).rgb;
 
-    vec3 ambient = 0.05 * color;
+    vec3 ambient = 0.4 * color;
 
     vec3 lightDir = normalize(LightPosition - fPosition);
 

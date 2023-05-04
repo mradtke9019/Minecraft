@@ -51,7 +51,7 @@ std::map<int,bool> keymap;
 
 void SetBackgroundColor(float time)
 {
-	float dayDuration = 10.0f;
+	float dayDuration = 600.0f;
 	glm::vec4 backgroundcolor = glm::vec4(Sky::GetColorForTimeOfDay(time, dayDuration), 1.0f);
 	glClearColor(backgroundcolor.r, backgroundcolor.g, backgroundcolor.b, 1.0f);
 }
