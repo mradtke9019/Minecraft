@@ -245,4 +245,15 @@
       <Filter>Resource Files\Textures</Filter>
     </CopyFileToFolders>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\DirtTexture2.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\DirtTexture3.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\DirtTexture1.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
