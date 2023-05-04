@@ -49,10 +49,12 @@ float lastX; //= SCR_WIDTH / 2.0f;
 float lastY;// = SCR_HEIGHT / 2.0f;
 std::map<int,bool> keymap;
 
+float dayDuration = 600.0f;
+float intialDayTime = dayDuration / 4.0f;
+
 void SetBackgroundColor(float time)
 {
-	float dayDuration = 600.0f;
-	glm::vec4 backgroundcolor = glm::vec4(Sky::GetColorForTimeOfDay(time, dayDuration), 1.0f);
+	glm::vec4 backgroundcolor = glm::vec4(Sky::GetColorForTimeOfDay(time + intialDayTime, dayDuration), 1.0f);
 	glClearColor(backgroundcolor.r, backgroundcolor.g, backgroundcolor.b, 1.0f);
 }
 
